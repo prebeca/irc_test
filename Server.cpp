@@ -104,6 +104,15 @@ int Server::start()
 	return (0);
 }
 
+void Server::handleCmd(const Message& msg)
+{
+	CmdHandler::const_iterator it = CmdHandler::cmd_lst.find(msg.getArgv()[0]);
+	if (it != CmdHandler::cmd_lst.end())
+		it->second();
+	// else
+	// 	TODO handle unknown cmd
+}
+
 /**
  * @brief accept all queued connection
  */
@@ -120,14 +129,25 @@ int Server::receiveMsg(int index)
 	}
 	if (recv_bytes == 0)
 	{
-		std::cout << COLOR_GREEN << "[-> Client quit !" << COLOR_RESET << std::endl;
+		std::cout << COLOR_GREEN << "[-> Client quit: " << inet_ntoa(user_lst[fd_lst[index].fd].socket.sin_addr) << COLOR_RESET << std::endl;
 		close(fd_lst[index].fd);
+		user_lst.erase(fd_lst[index].fd);
 		fd_lst.erase(fd_lst.begin() + index);
 	}
 	else
 	{
-		std::cout << buffer << std::endl;
-		// TODO handle msessages and cmd diferenciation + answer and redistribution
+		std::string str_buff(buffer);
+		user_lst[index].buffer += str_buff;
+		size_t	cmd_end;
+		while ((cmd_end = user_lst[index].buffer.find("\r\n", 0)) != std::string::npos)
+		{
+			Message msg(user_lst[index].buffer.substr(0, cmd_end + 2));
+			
+			handleCmd(msg);
+			std::cout << msg.getRaw() << std::endl;
+			
+			user_lst[index].buffer.erase(0, cmd_end + 2);
+		}
 	}
 	return (0);
 }
@@ -138,15 +158,21 @@ int Server::receiveMsg(int index)
 int Server::acceptClient()
 {
 	int			new_fd;
+	sockaddr_in	new_soket;
+	socklen_t	sok_len;
+	User		new_u;
 
 	// accept all queued connection
-	while ((new_fd = accept(fd_lst[0].fd, NULL, NULL)) != -1)
+	while ((new_fd = accept(fd_lst[0].fd, (sockaddr*)&new_soket, &sok_len)) != -1)
 	{
 		fd_lst.push_back(pollfd());
 		fd_lst.back().fd = new_fd;
 		fd_lst.back().events = POLLIN;
+		
+		new_u.socket = new_soket;
+		user_lst.insert(std::make_pair(new_fd, new_u));
 
-		std::cout << COLOR_GREEN << "[<- New client accepted !" << COLOR_RESET << std::endl;
+		std::cout << COLOR_GREEN << "[<- New client: " << inet_ntoa(new_u.socket.sin_addr) << COLOR_RESET << std::endl;
 	}
 
 	// if errno == EWOULDBLOCK it mean there is no more connection queued, else there is an error

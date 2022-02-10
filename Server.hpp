@@ -2,6 +2,8 @@
 #define SERVER_HPP
 
 #include "User.hpp"
+#include "Message.hpp"
+#include "CmdHandler.hpp"
 
 #include <iostream>
 #include <string>
@@ -48,8 +50,9 @@ class Server
 		int setup();
 		int start();
 		
-		int receiveMsg(int index);
-		int acceptClient();
+		int		receiveMsg(int index);
+		void	handleCmd(const Message& msg);
+		int		acceptClient();
 
 		std::string		name;
 		std::string		password;
