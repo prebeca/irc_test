@@ -74,4 +74,20 @@ namespace cmd
 		send(user_fd, ss.str().c_str(), ss.str().size(), 0);
 		return (0);
 	}
+
+	int join(Server& srv, int user_fd, const Message& msg)
+	{
+		if (msg.getArgv().size() != 2)
+			return(1); // handle error
+		
+		srv.chan_lst.insert(std::make_pair(msg.getArgv()[1], Channel()));
+		srv.chan_lst[msg.getArgv()[1]].users.push_back(&srv.user_lst[user_fd]);
+
+		srv.user_lst[user_fd].channels.push_back(&srv.chan_lst[msg.getArgv()[1]]);
+
+		std::stringstream ss;
+		ss << "JOIN" << " " << msg.getRaw();
+		send(user_fd, ss.str().c_str(), ss.str().size(), 0);
+		return (0);
+	}
 };

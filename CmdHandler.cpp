@@ -10,6 +10,7 @@ const std::map<const std::string, pCmd> CmdHandler::buildMap()
 	cmd_lst["NICK"] = cmd::nick;
 	cmd_lst["USER"] = cmd::user;
 	cmd_lst["PING"] = cmd::ping;
+	cmd_lst["JOIN"] = cmd::join;
 
 	return (cmd_lst);
 }

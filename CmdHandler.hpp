@@ -6,6 +6,7 @@
 #include "Server.hpp"
 #include "Message.hpp"
 #include "User.hpp"
+#include "Channel.hpp"
 
 #include <map>
 #include <string>
@@ -20,6 +21,7 @@ namespace cmd
 	int nick(Server& srv, int user_fd, const Message& msg);
 	int user(Server& srv, int user_fd, const Message& msg);
 	int ping(Server& srv, int user_fd, const Message& msg);
+	int join(Server& srv, int user_fd, const Message& msg);
 };
 
 typedef int (*pCmd)(Server& srv, int user_fd, const Message& msg);

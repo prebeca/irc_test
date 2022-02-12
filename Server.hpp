@@ -48,6 +48,7 @@ class Server
 
 		std::vector<pollfd>	fd_lst;
 		std::map<int, User>	user_lst;
+		std::map<std::string, Channel> chan_lst;
 
 	private:
 		Server();
