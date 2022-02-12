@@ -13,6 +13,7 @@ struct Channel;
 
 struct User
 {
+	bool registered;
 	std::string nickname;
 	std::string username;
 	std::string realname;

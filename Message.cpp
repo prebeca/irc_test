@@ -1,5 +1,7 @@
 #include "Message.hpp"
 
+#include <iostream>
+
 Message::Message(std::string raw_msg)
 : raw_msg(raw_msg)
 {
@@ -32,6 +34,12 @@ void Message::parseMsg()
 	msg.erase(msg.find("\r\n", 0));
 	while ((sub_len = msg.find(' ')) != std::string::npos)
 	{
+		if (msg[0] == ':' && argv.size() > 0)
+		{
+			argv.push_back(msg);
+			msg.erase();
+			break ;
+		}
 		argv.push_back(msg.substr(0, sub_len));
 		msg.erase(0, sub_len + 1);
 	}

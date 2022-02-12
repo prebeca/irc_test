@@ -42,6 +42,13 @@ class Server
 		int run();
 		int stop();
 
+		std::string		name;
+		std::string		password;
+		unsigned int	port;
+
+		std::vector<pollfd>	fd_lst;
+		std::map<int, User>	user_lst;
+
 	private:
 		Server();
 		Server(const Server&);
@@ -51,15 +58,9 @@ class Server
 		int start();
 		
 		int		receiveMsg(int index);
-		void	handleCmd(const Message& msg);
+		void	handleCmd(int user_fd, const Message& msg);
 		int		acceptClient();
 
-		std::string		name;
-		std::string		password;
-		unsigned int	port;
-
-		std::vector<pollfd>	fd_lst;
-		std::map<int, User>	user_lst;
 };
 
 #endif // SERVER_HPP

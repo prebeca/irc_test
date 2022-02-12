@@ -104,11 +104,11 @@ int Server::start()
 	return (0);
 }
 
-void Server::handleCmd(const Message& msg)
+void Server::handleCmd(int usr_fd, const Message& msg)
 {
 	CmdHandler::const_iterator it = CmdHandler::cmd_lst.find(msg.getArgv()[0]);
 	if (it != CmdHandler::cmd_lst.end())
-		it->second();
+		it->second(*this, usr_fd, msg);
 	// else
 	// 	TODO handle unknown cmd
 }
@@ -137,16 +137,16 @@ int Server::receiveMsg(int index)
 	else
 	{
 		std::string str_buff(buffer);
-		user_lst[index].buffer += str_buff;
+		user_lst[fd_lst[index].fd].buffer += str_buff;
 		size_t	cmd_end;
-		while ((cmd_end = user_lst[index].buffer.find("\r\n", 0)) != std::string::npos)
+		while ((cmd_end = user_lst[fd_lst[index].fd].buffer.find("\r\n", 0)) != std::string::npos)
 		{
-			Message msg(user_lst[index].buffer.substr(0, cmd_end + 2));
+			Message msg(user_lst[fd_lst[index].fd].buffer.substr(0, cmd_end + 2));
 			
-			handleCmd(msg);
 			std::cout << msg.getRaw() << std::endl;
+			handleCmd(fd_lst[index].fd, msg);
 			
-			user_lst[index].buffer.erase(0, cmd_end + 2);
+			user_lst[fd_lst[index].fd].buffer.erase(0, cmd_end + 2);
 		}
 	}
 	return (0);
@@ -170,6 +170,7 @@ int Server::acceptClient()
 		fd_lst.back().events = POLLIN;
 		
 		new_u.socket = new_soket;
+		new_u.registered = false;
 		user_lst.insert(std::make_pair(new_fd, new_u));
 
 		std::cout << COLOR_GREEN << "[<- New client: " << inet_ntoa(new_u.socket.sin_addr) << COLOR_RESET << std::endl;

@@ -6,7 +6,10 @@ const std::map<const std::string, pCmd> CmdHandler::buildMap()
 {
 	std::map<const std::string, pCmd> cmd_lst;
 
-	cmd_lst["CAP"] = cmdCap;
+	cmd_lst["CAP"] = cmd::cap;
+	cmd_lst["NICK"] = cmd::nick;
+	cmd_lst["USER"] = cmd::user;
+	cmd_lst["PING"] = cmd::ping;
 
 	return (cmd_lst);
 }

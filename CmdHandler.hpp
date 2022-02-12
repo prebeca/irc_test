@@ -1,17 +1,28 @@
 #ifndef CMDHANDLER_HPP
 #define CMDHANDLER_HPP
 
+#include "irc.hpp"
+
+#include "Server.hpp"
+#include "Message.hpp"
+#include "User.hpp"
+
 #include <map>
 #include <string>
+#include <sstream>
 #include <iostream>
 
-inline int cmdCap(void)
-{
-	std::cout << "handled CAP cmd" << std::endl;
-	return(0);
-}
+class Server;
 
-typedef int (*pCmd)(void);
+namespace cmd
+{
+	int cap(Server& srv, int user_fd, const Message& msg);
+	int nick(Server& srv, int user_fd, const Message& msg);
+	int user(Server& srv, int user_fd, const Message& msg);
+	int ping(Server& srv, int user_fd, const Message& msg);
+};
+
+typedef int (*pCmd)(Server& srv, int user_fd, const Message& msg);
 
 struct CmdHandler
 {
