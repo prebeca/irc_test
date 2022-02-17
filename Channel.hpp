@@ -3,14 +3,14 @@
 
 #include "User.hpp"
 
-#include <vector>
+#include <map>
 
 struct User;
 
 struct Channel
 {
-	std::vector<User*> operators;
-	std::vector<User*> users;
+	std::map<int, User*> operators;
+	std::map<int, User*> users;
 };
 
 #endif // CHANNEL_HPP

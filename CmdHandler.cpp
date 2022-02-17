@@ -11,6 +11,8 @@ const std::map<const std::string, pCmd> CmdHandler::buildMap()
 	cmd_lst["USER"] = cmd::user;
 	cmd_lst["PING"] = cmd::ping;
 	cmd_lst["JOIN"] = cmd::join;
+	cmd_lst["PART"] = cmd::part;
+	cmd_lst["PRIVMSG"] = cmd::privmsg;
 
 	return (cmd_lst);
 }

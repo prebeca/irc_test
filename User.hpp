@@ -5,6 +5,8 @@
 
 #include <string>
 
+#include <map>
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -13,13 +15,14 @@ struct Channel;
 
 struct User
 {
-	bool registered;
+	bool		registered;
 	std::string nickname;
 	std::string username;
 	std::string realname;
 	sockaddr_in	socket;
+	int			fd;
 
-	std::vector<Channel*> channels;
+	std::map<std::string, Channel*> channels;
 	std::string buffer;
 };
 

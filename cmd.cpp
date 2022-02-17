@@ -27,6 +27,13 @@ void registerUser(int fd, User& usr)
 	std::cout << COLOR_GREEN << usr.nickname << " succesfully registered !" << COLOR_RESET << std::endl;
 }
 
+void sendToList(std::string msg, std::map<int, User*> users)
+{
+	std::map<int, User*>::iterator it;
+	for (it = users.begin(); it != users.end(); ++it)
+		send(it->second->fd, msg.c_str(), msg.size(), 0);
+}
+
 namespace cmd
 {
 	int cap(Server& srv, int user_fd, const Message& msg)
@@ -81,13 +88,57 @@ namespace cmd
 			return(1); // handle error
 		
 		srv.chan_lst.insert(std::make_pair(msg.getArgv()[1], Channel()));
-		srv.chan_lst[msg.getArgv()[1]].users.push_back(&srv.user_lst[user_fd]);
+		srv.chan_lst[msg.getArgv()[1]].users.insert(std::make_pair(user_fd, &srv.user_lst[user_fd]));
 
-		srv.user_lst[user_fd].channels.push_back(&srv.chan_lst[msg.getArgv()[1]]);
+		srv.user_lst[user_fd].channels.insert(std::make_pair(msg.getArgv()[1], &srv.chan_lst[msg.getArgv()[1]]));
 
 		std::stringstream ss;
-		ss << "JOIN" << " " << msg.getRaw();
-		send(user_fd, ss.str().c_str(), ss.str().size(), 0);
+		ss << ":" << srv.user_lst[user_fd].nickname << " " << msg.getRaw();
+		sendToList(ss.str(), srv.chan_lst[msg.getArgv()[1]].users);
+		std::cout << ss.str() << std::endl;
 		return (0);
 	}
+
+	int part(Server& srv, int user_fd, const Message& msg)
+	{
+		if (msg.getArgv().size() != 2)
+			return(1); // handle error
+
+		std::map<std::string, Channel*>::iterator it;
+		it = srv.user_lst[user_fd].channels.find(msg.getArgv()[1]);
+
+		if (it != srv.user_lst[user_fd].channels.end())
+		{
+			srv.chan_lst[msg.getArgv()[1]].users.erase(user_fd);
+			srv.user_lst[user_fd].channels.erase(msg.getArgv()[1]);
+		}
+
+		std::stringstream ss;
+		ss << ":" << srv.user_lst[user_fd].nickname << " " << msg.getRaw();
+		sendToList(ss.str(), srv.chan_lst[msg.getArgv()[1]].users);
+		send(user_fd, ss.str().c_str(), ss.str().size(), 0);
+		std::cout << ss.str() << std::endl;
+		return (0);
+	}
+
+	int privmsg(Server& srv, int user_fd, const Message& msg)
+	{
+		if (msg.getArgv().size() != 3)
+			return(1); // handle error
+
+		std::map<std::string, Channel*>::iterator it;
+		it = srv.user_lst[user_fd].channels.find(msg.getArgv()[1]);
+
+		if (it != srv.user_lst[user_fd].channels.end())
+		{
+			std::stringstream ss;
+			ss << ":" << srv.user_lst[user_fd].nickname << " " << msg.getRaw();
+			std::map<int, User*> lst = srv.chan_lst[msg.getArgv()[1]].users;
+			lst.erase(user_fd);
+			sendToList(ss.str(), lst);
+			std::cout << ss.str() << std::endl;
+		}
+		return (0);
+	}
+
 };

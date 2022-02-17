@@ -170,6 +170,7 @@ int Server::acceptClient()
 		fd_lst.back().events = POLLIN;
 		
 		new_u.socket = new_soket;
+		new_u.fd = new_fd;
 		new_u.registered = false;
 		user_lst.insert(std::make_pair(new_fd, new_u));
 

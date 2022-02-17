@@ -22,6 +22,8 @@ namespace cmd
 	int user(Server& srv, int user_fd, const Message& msg);
 	int ping(Server& srv, int user_fd, const Message& msg);
 	int join(Server& srv, int user_fd, const Message& msg);
+	int part(Server& srv, int user_fd, const Message& msg);
+	int privmsg(Server& srv, int user_fd, const Message& msg);
 };
 
 typedef int (*pCmd)(Server& srv, int user_fd, const Message& msg);
