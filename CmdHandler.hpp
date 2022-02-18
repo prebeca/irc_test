@@ -24,6 +24,7 @@ namespace cmd
 	int join(Server& srv, int user_fd, const Message& msg);
 	int part(Server& srv, int user_fd, const Message& msg);
 	int privmsg(Server& srv, int user_fd, const Message& msg);
+	int list(Server& srv, int user_fd, const Message& msg);
 };
 
 typedef int (*pCmd)(Server& srv, int user_fd, const Message& msg);

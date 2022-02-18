@@ -9,8 +9,10 @@ struct User;
 
 struct Channel
 {
-	std::map<int, User*> operators;
-	std::map<int, User*> users;
+	std::string				name;
+	std::map<int, User*>	operators;
+	std::map<int, User*>	users;
+	std::string				topic;
 };
 
 #endif // CHANNEL_HPP

@@ -88,6 +88,7 @@ namespace cmd
 			return(1); // handle error
 		
 		srv.chan_lst.insert(std::make_pair(msg.getArgv()[1], Channel()));
+		srv.chan_lst[msg.getArgv()[1]].name = msg.getArgv()[1];
 		srv.chan_lst[msg.getArgv()[1]].users.insert(std::make_pair(user_fd, &srv.user_lst[user_fd]));
 
 		srv.user_lst[user_fd].channels.insert(std::make_pair(msg.getArgv()[1], &srv.chan_lst[msg.getArgv()[1]]));
@@ -138,6 +139,42 @@ namespace cmd
 			sendToList(ss.str(), lst);
 			std::cout << ss.str() << std::endl;
 		}
+		return (0);
+	}
+
+	int list(Server& srv, int user_fd, const Message& msg)
+	{
+		if (msg.getArgv().size() > 2)
+			return(1); // handle error
+
+		std::stringstream ss;
+
+		if (msg.getArgv().size() == 1)
+		{
+ 			std::map<std::string, Channel>::iterator it;
+			for (it = srv.chan_lst.begin(); it != srv.chan_lst.end(); ++it)
+			{
+				ss.str("");
+				ss << ":ircserv" << " " << RPL_LIST << " " << srv.user_lst[user_fd].nickname << " ";
+				ss << it->second.name << " :" << it->second.topic;
+				ss << CRLF;
+				send(user_fd, ss.str().c_str(), ss.str().size(), 0);
+				std::cout << ss.str() << std::endl;
+			}
+		}
+		else if (srv.chan_lst.find(msg.getArgv()[1]) != srv.chan_lst.end())
+		{
+			ss.str("");
+			ss << ":ircserv" << " " << RPL_LIST << " " << srv.user_lst[user_fd].nickname << " :";
+			ss << srv.chan_lst[msg.getArgv()[1]].name << " :" << srv.chan_lst[msg.getArgv()[1]].topic;
+			ss << CRLF;
+			send(user_fd, ss.str().c_str(), ss.str().size(), 0);
+			std::cout << ss.str() << std::endl;
+		}
+		ss.str("");
+		ss << ":ircserv" << " " << RPL_LISTEND << " " << srv.user_lst[user_fd].nickname << " :End of List" << CRLF;
+		send(user_fd, ss.str().c_str(), ss.str().size(), 0);
+		std::cout << ss.str() << std::endl;
 		return (0);
 	}
 

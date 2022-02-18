@@ -13,6 +13,7 @@ const std::map<const std::string, pCmd> CmdHandler::buildMap()
 	cmd_lst["JOIN"] = cmd::join;
 	cmd_lst["PART"] = cmd::part;
 	cmd_lst["PRIVMSG"] = cmd::privmsg;
+	cmd_lst["LIST"] = cmd::list;
 
 	return (cmd_lst);
 }

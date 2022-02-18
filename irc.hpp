@@ -21,6 +21,7 @@
 **	Error code
 */
 
-
+#define RPL_LIST			"322"
+#define RPL_LISTEND			"323"
 
 #endif // IRC_HPP
