@@ -1,4 +1,5 @@
 #include "CmdHandler.hpp"
+#include "utils.hpp"
 
 void registerUser(int fd, User& usr)
 {
@@ -87,16 +88,27 @@ namespace cmd
 		if (msg.getArgv().size() != 2)
 			return(1); // handle error
 		
-		srv.chan_lst.insert(std::make_pair(msg.getArgv()[1], Channel()));
-		srv.chan_lst[msg.getArgv()[1]].name = msg.getArgv()[1];
-		srv.chan_lst[msg.getArgv()[1]].users.insert(std::make_pair(user_fd, &srv.user_lst[user_fd]));
+		std::vector<std::string> channels = ft_split(msg.getArgv()[1], ",");
 
-		srv.user_lst[user_fd].channels.insert(std::make_pair(msg.getArgv()[1], &srv.chan_lst[msg.getArgv()[1]]));
+		for (size_t i = 0; i < channels.size(); ++i)
+		{
+			// srv.chan_lst.insert(std::make_pair(msg.getArgv()[1], Channel()));
+			srv.chan_lst[channels[i]].name = channels[i];
+			srv.chan_lst[channels[i]].users.insert(std::make_pair(user_fd, &srv.user_lst[user_fd]));
 
-		std::stringstream ss;
-		ss << ":" << srv.user_lst[user_fd].nickname << " " << msg.getRaw();
-		sendToList(ss.str(), srv.chan_lst[msg.getArgv()[1]].users);
-		std::cout << ss.str() << std::endl;
+			srv.user_lst[user_fd].channels.insert(std::make_pair(channels[i], &srv.chan_lst[channels[i]]));
+
+			std::stringstream ss;
+			ss << ":" << srv.user_lst[user_fd].nickname << " JOIN " << channels[i] << CRLF;
+			sendToList(ss.str(), srv.chan_lst[channels[i]].users);
+			std::cout << ss.str() << std::endl;
+			
+			ss.str("");
+			ss << ":" << "ircserv" << " " << RPL_TOPIC << " " << srv.user_lst[user_fd].nickname << " " << channels[i] << " :" << srv.chan_lst[channels[i]].topic << CRLF;
+			send(user_fd, ss.str().c_str(), ss.str().size(), 0);
+			std::cout << ss.str() << std::endl;
+		}
+
 		return (0);
 	}
 

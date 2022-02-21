@@ -17,11 +17,8 @@
 #define RPL_CREATED_MSG		"This server was created <date>"
 #define RPL_MYINFO_MSG		"<servername> <version> <available user modes> <available channel modes>"
 
-/*
-**	Error code
-*/
-
 #define RPL_LIST			"322"
 #define RPL_LISTEND			"323"
+#define RPL_TOPIC			"332"
 
 #endif // IRC_HPP

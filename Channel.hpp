@@ -13,6 +13,7 @@ struct Channel
 	std::map<int, User*>	operators;
 	std::map<int, User*>	users;
 	std::string				topic;
+	std::string				key;
 };
 
 #endif // CHANNEL_HPP
