@@ -30,6 +30,85 @@ int Server::run()
 	return (0);
 }
 
+User*	Server::addUser(User& new_user)
+{
+	std::pair<std::map<int, User*>::iterator, bool> p;
+	std::pair<std::map<std::string, User*>::iterator, bool> p1;
+
+	p =	this->user_by_fd.insert(std::make_pair(new_user.fd, &new_user));
+	if (p.second == false)
+		return (NULL);
+	p1 = this->user_by_nick.insert(std::make_pair(new_user.nickname, &new_user));
+	if (p1.second == false)
+	{
+		this->user_by_fd.erase(new_user.fd);
+		return (NULL);
+	}
+	return (p.first->second);
+}
+
+void	Server::removeUser(User& user)
+{
+	this->user_by_fd.erase(user.fd);
+	this->user_by_nick.erase(user.nickname);
+}
+
+User*	Server::getUser(int user_fd) const
+{
+	std::map<int, User*>::const_iterator it;
+	it = this->user_by_fd.find(user_fd);
+	if (it == this->user_by_fd.end())
+		return (NULL);
+	return (it->second);
+}
+ 
+User*	Server::getUser(std::string nickname) const
+{
+	std::map<std::string, User*>::const_iterator it;
+	it = this->user_by_nick.find(nickname);
+	if (it == this->user_by_nick.end())
+		return (NULL);
+	return (it->second);
+}
+ 
+
+Channel* Server::createChannel(std::string name, User* creator)
+{
+	std::pair<std::map<std::string, Channel*>::iterator, bool> p;
+	p = this->chan_lst.insert(std::make_pair(name, new Channel()));
+	if (p.second == false)
+		return (NULL);
+	// TODO add creator to user list and chanop
+	// p.first.addUser(creator);
+	// p.first.addOpe(creator);
+	return(p.first->second);
+}
+ 
+Channel* Server::getChannel(std::string name)
+{
+	std::map<std::string, Channel*>::iterator it;
+	it = this->chan_lst.find(name);
+	if (it == this->chan_lst.end())
+		return (NULL);
+	return (it->second);
+}
+ 
+std::string Server::getPassword() const
+{
+	return(this->password);
+}
+ 
+std::string Server::getName() const
+{
+	return(this->name);
+}
+ 
+unsigned int Server::getPort() const
+{
+	return(this->port);
+}
+ 
+
 /**
  * @brief create a socket and bind it on port
  * 
@@ -38,30 +117,30 @@ int Server::run()
 int Server::setup()
 {
 
-	fd_lst.push_back(pollfd());
-
-	fd_lst.front().fd = socket(AF_INET, SOCK_STREAM, 0);
-	if (fd_lst.front().fd == -1)
+	pollfd server_socket;
+	server_socket.fd = socket(AF_INET, SOCK_STREAM, 0);
+	if (server_socket.fd == -1)
 		return (1);
-	fcntl(fd_lst.front().fd, F_SETFL, O_NONBLOCK);
-	fd_lst.front().events = POLLIN;
+	fcntl(server_socket.fd, F_SETFL, O_NONBLOCK);
+	server_socket.events = POLLIN;
 
+	fd_lst.push_back(server_socket);
 
-	sockaddr_in sock;
-	sock.sin_family = AF_INET;
-	sock.sin_addr.s_addr = INADDR_ANY;
-	sock.sin_port = htons(this->port);
+	sockaddr_in sock_addr;
+	sock_addr.sin_family = AF_INET;
+	sock_addr.sin_addr.s_addr = INADDR_ANY;
+	sock_addr.sin_port = htons(this->port);
 
 	int on = 1;
-	setsockopt(fd_lst.front().fd, SOL_SOCKET, SO_REUSEADDR, (char*)&on, sizeof(on));
+	setsockopt(server_socket.fd, SOL_SOCKET, SO_REUSEADDR, (char*)&on, sizeof(on));
 
-	if (bind(fd_lst.front().fd, (sockaddr*)&sock, sizeof(sock)) == -1)
+	if (bind(server_socket.fd, (sockaddr*)&sock_addr, sizeof(sock_addr)) == -1)
 	{
 		std::cerr << COLOR_RED << std::strerror(errno) << COLOR_RESET << std::endl;
 		return (1);
 	}
 
-	std::cout << COLOR_GREEN << "Server is setup! Bind on " << inet_ntoa(sock.sin_addr) << ":" << this->port << COLOR_RESET << std::endl;
+	std::cout << COLOR_GREEN << "Server is setup! Bind on " << inet_ntoa(sock_addr.sin_addr) << ":" << this->port << COLOR_RESET << std::endl;
 	return (0);
 }
 
@@ -96,7 +175,7 @@ int Server::start()
 				if (i == 0)
 					acceptClient();
 				else
-					receiveMsg(i);
+					receiveMsg(fd_lst[i].fd, i);
 			}
 		}
 	}
@@ -116,12 +195,17 @@ void Server::handleCmd(int usr_fd, const Message& msg)
 /**
  * @brief accept all queued connection
  */
-int Server::receiveMsg(int index)
+int Server::receiveMsg(int fd, int index)
 {
-	char buffer[BUFFER_SIZE + 1];
+	User*	client;
+	char	buffer[BUFFER_SIZE + 1];
 	memset(buffer, 0, BUFFER_SIZE + 1);
 
-	int recv_bytes = recv(fd_lst[index].fd, buffer, BUFFER_SIZE, 0);
+	client = this->getUser(fd);
+	if (client == NULL)
+		return (1);
+
+	int recv_bytes = recv(fd, buffer, BUFFER_SIZE, 0);
 	if (recv_bytes == -1)
 	{
 		std::cerr << COLOR_RED << std::strerror(errno) << COLOR_RESET << std::endl;
@@ -129,24 +213,24 @@ int Server::receiveMsg(int index)
 	}
 	if (recv_bytes == 0)
 	{
-		std::cout << COLOR_GREEN << "[-> Client quit: " << inet_ntoa(user_lst[fd_lst[index].fd].socket.sin_addr) << COLOR_RESET << std::endl;
-		close(fd_lst[index].fd);
-		user_lst.erase(fd_lst[index].fd);
+		std::cout << COLOR_GREEN << "[-> Client quit: " << inet_ntoa(client->socket.sin_addr) << COLOR_RESET << std::endl;
+		close(fd);
+		this->removeUser(*client);
 		fd_lst.erase(fd_lst.begin() + index);
 	}
 	else
 	{
 		std::string str_buff(buffer);
-		user_lst[fd_lst[index].fd].buffer += str_buff;
+		client->buffer += str_buff;
 		size_t	cmd_end;
-		while ((cmd_end = user_lst[fd_lst[index].fd].buffer.find("\r\n", 0)) != std::string::npos)
+		while ((cmd_end = client->buffer.find("\r\n", 0)) != std::string::npos)
 		{
-			Message msg(user_lst[fd_lst[index].fd].buffer.substr(0, cmd_end + 2));
+			Message msg(client->buffer.substr(0, cmd_end + 2));
 			
 			std::cout << msg.getRaw() << std::endl;
-			handleCmd(fd_lst[index].fd, msg);
+			handleCmd(fd, msg);
 			
-			user_lst[fd_lst[index].fd].buffer.erase(0, cmd_end + 2);
+			client->buffer.erase(0, cmd_end + 2);
 		}
 	}
 	return (0);
@@ -172,7 +256,7 @@ int Server::acceptClient()
 		new_u.socket = new_soket;
 		new_u.fd = new_fd;
 		new_u.registered = false;
-		user_lst.insert(std::make_pair(new_fd, new_u));
+		this->addUser(*new User(new_u));
 
 		std::cout << COLOR_GREEN << "[<- New client: " << inet_ntoa(new_u.socket.sin_addr) << COLOR_RESET << std::endl;
 	}

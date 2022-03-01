@@ -41,14 +41,19 @@ class Server
 		
 		int run();
 		int stop();
+		
+		User*	addUser(User& new_user);
+		void	removeUser(User& new_user);
+		User*	getUser(int user_fd) const;
+		User*	getUser(std::string nickname) const;
 
-		std::string		name;
-		std::string		password;
-		unsigned int	port;
+		Channel*	createChannel(std::string name, User* creator);
+		Channel*	getChannel(std::string name);
 
-		std::vector<pollfd>	fd_lst;
-		std::map<int, User>	user_lst;
-		std::map<std::string, Channel> chan_lst;
+		std::string		getPassword() const;
+		std::string		getName() const;
+		unsigned int	getPort() const;
+
 
 	private:
 		Server();
@@ -58,10 +63,18 @@ class Server
 		int setup();
 		int start();
 		
-		int		receiveMsg(int index);
+		int		receiveMsg(int fd, int index);
 		void	handleCmd(int user_fd, const Message& msg);
 		int		acceptClient();
 
+		std::string		name;
+		std::string		password;
+		unsigned int	port;
+
+		std::vector<pollfd>				fd_lst;
+		std::map<int, User*>				user_by_fd;
+		std::map<std::string, User*>		user_by_nick;
+		std::map<std::string, Channel*>	chan_lst;
 };
 
 #endif // SERVER_HPP
