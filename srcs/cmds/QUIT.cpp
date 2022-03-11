@@ -37,6 +37,9 @@ int QUIT::execute(Server &srv, Client &user, const Message &msg) const
 				srv.sendMsg(it->second->getFd(), Message(user.getNickname(), rpl));
 		}
 	}
+
+	std::cout << COLOR_GREEN << "Client quit: " << inet_ntoa(user.getSocket().sin_addr) << COLOR_RESET << std::endl;
 	srv.removeClient(&user);
+	
 	return (QUIT_RETURN);
 }

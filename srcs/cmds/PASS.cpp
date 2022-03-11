@@ -22,16 +22,18 @@ int PASS::execute(Server &srv, Client &user, const Message &msg) const
 	{
 		const char *err[] = {ERR_NEEDMOREPARAMS, msg.getArgv()[0].c_str(), NULL};
 		srv.sendMsg(user.getFd(), Message(SERVER_NAME, err));
-		srv.removeClient(&user);
-		return (QUIT_RETURN);
+		// srv.removeClient(&user);
+		// return (QUIT_RETURN);
+		return (1);
 	}
 
 	if (!srv.getPassword().empty() && srv.getPassword().compare(msg.getArgv()[1]) != 0)
 	{
 		const char *err[] = {ERR_PASSWDMISMATCH, msg.getArgv()[0].c_str(), ":Password incorrect", NULL};
 		srv.sendMsg(user.getFd(), Message(SERVER_NAME, err));
-		srv.removeClient(&user);
-		return (QUIT_RETURN);
+		// srv.removeClient(&user);
+		// return (QUIT_RETURN);
+		return (1);
 	}
 
 	user.setPassCheck(true);

@@ -13,8 +13,9 @@ int USER::execute(Server &srv, Client &user, const Message &msg) const
 {
 	if (!srv.getPassword().empty() && !user.isPassCheck())
 	{
-		srv.removeClient(&user);
-		return (QUIT_RETURN);
+		// srv.removeClient(&user);
+		// return (QUIT_RETURN);
+		return (1);
 	}
 
 	if (user.isRegistered())
