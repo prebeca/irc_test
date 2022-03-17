@@ -1,0 +1,3 @@
+PASS password
+NICK prebeca
+USER prebeca prebeca 127.0.0.1 :prebeca

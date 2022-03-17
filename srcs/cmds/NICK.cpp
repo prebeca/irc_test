@@ -13,29 +13,25 @@ int NICK::execute(Server &srv, Client &user, const Message &msg) const
 {
 	if (!srv.getPassword().empty() && !user.isPassCheck())
 	{
-		// srv.removeClient(&user);
-		// return (QUIT_RETURN);
-		return (1);
+		srv.removeClient(&user);
+		return (QUIT_RETURN);
 	}
 
 	if (msg.getArgv().size() < 2)
 	{
-		const char *err[] = {ERR_NONICKNAMEGIVEN, user.getNickname().c_str(), ":No nickname given", NULL};
-		srv.sendMsg(user.getFd(), Message(SERVER_NAME, err));
+		srv.sendMsg(user.getFd(), Message(ERR_NONICKNAMEGIVEN(user.getNickname())));
 		return (1);
 	}
 
 	if (utils::strToUpper(user.getNickname()) != utils::strToUpper(msg.getArgv()[1]) && srv.getUser(msg.getArgv()[1]) != NULL)
 	{
-		const char *err[] = {ERR_NICKNAMEINUSE, user.getNickname().c_str(), msg.getArgv()[1].c_str(), ":Nickname is already in use", NULL};
-		srv.sendMsg(user.getFd(), Message(SERVER_NAME, err));
+		srv.sendMsg(user.getFd(), Message(ERR_NICKNAMEINUSE(user.getNickname(), msg.getArgv()[1])));
 		return (1);
 	}
 
 	if (!this->isValidNick(msg.getArgv()[1]))
 	{
-		const char *err[] = {ERR_ERRONEUSNICKNAME, user.getNickname().c_str(), msg.getArgv()[1].c_str(), ":Erroneous nickname", NULL};
-		srv.sendMsg(user.getFd(), Message(SERVER_NAME, err));
+		srv.sendMsg(user.getFd(), Message(ERR_ERRONEUSNICKNAME(user.getNickname(), msg.getArgv()[1])));
 		return (1);
 	}
 

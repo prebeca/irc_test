@@ -10,6 +10,8 @@
 #include "cmds/TOPIC.hpp"
 #include "cmds/KICK.hpp"
 #include "cmds/PASS.hpp"
+#include "cmds/MODE.hpp"
+#include "cmds/NOTICE.hpp"
 
 CmdHandler::CmdHandler()
 {
@@ -24,6 +26,8 @@ CmdHandler::CmdHandler()
 	this->cmds["TOPIC"] = new TOPIC();
 	this->cmds["KICK"] = new KICK();
 	this->cmds["PASS"] = new PASS();
+	this->cmds["MODE"] = new MODE();
+	this->cmds["NOTICE"] = new NOTICE();
 }
 
 CmdHandler::~CmdHandler()

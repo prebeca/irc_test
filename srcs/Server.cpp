@@ -43,17 +43,10 @@ int Server::registerUser(Client &user)
 	if (user.isRegistered())
 		return (1);
 
-	const char *argv_welcome[] = {RPL_WELCOME, user.getNickname().c_str(), RPL_WELCOME_MSG, NULL};
-	this->sendMsg(user.getFd(), Message("ircserv", argv_welcome));
-
-	const char *argv_host[] = {RPL_YOURHOST, user.getNickname().c_str(), RPL_YOURHOST_MSG, NULL};
-	this->sendMsg(user.getFd(), Message("ircserv", argv_host));
-
-	const char *argv_created[] = {RPL_CREATED, user.getNickname().c_str(), RPL_CREATED_MSG, NULL};
-	this->sendMsg(user.getFd(), Message("ircserv", argv_created));
-
-	const char *argv_info[] = {RPL_MYINFO, user.getNickname().c_str(), RPL_MYINFO_MSG, NULL};
-	this->sendMsg(user.getFd(), Message("ircserv", argv_info));
+	this->sendMsg(user.getFd(), Message(RPL_WELCOME(user.getNickname())));
+	this->sendMsg(user.getFd(), Message(RPL_YOURHOST(user.getNickname(), SERVER_NAME, VERSION)));
+	this->sendMsg(user.getFd(), Message(RPL_CREATED(user.getNickname(), "today")));
+	this->sendMsg(user.getFd(), Message(RPL_MYINFO(user.getNickname(), SERVER_NAME, VERSION, "<usermods>", "<chanmodes>")));
 
 	user.setRegistered(true);
 	std::cout << COLOR_GREEN << user.getNickname() << " succesfully registered !" << COLOR_RESET << std::endl;

@@ -3,6 +3,8 @@
 
 #include "ACommand.hpp"
 
+#define PRIVMSG_FORMAT(nickname,target,msg) (":" + nickname + " PRIVMSG " + target + " " + msg + CRLF)
+
 class ACommand;
 
 class PRIVMSG: public ACommand

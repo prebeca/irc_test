@@ -13,15 +13,13 @@ int PART::execute(Server &srv, Client &user, const Message &msg) const
 {
 	if (!user.isRegistered())
 	{
-		const char *err[] = {ERR_NOTREGISTERED, ":You have not registered", NULL};
-		srv.sendMsg(user.getFd(), Message(SERVER_NAME, err));
+		srv.sendMsg(user.getFd(), Message(ERR_NOTREGISTERED(user.getNickname())));
 		return (1);
 	}
 
 	if (msg.getArgv().size() < 2)
 	{
-		const char *err[] = {ERR_NEEDMOREPARAMS, user.getNickname().c_str(), ":Not enough parameters", NULL};
-		srv.sendMsg(user.getFd(), Message(SERVER_NAME, err));
+		srv.sendMsg(user.getFd(), Message(ERR_NEEDMOREPARAMS(user.getNickname(), this->name)));
 		return (1);
 	}
 
@@ -38,15 +36,13 @@ int PART::execute(Server &srv, Client &user, const Message &msg) const
 
 		if (chan == NULL)
 		{
-			const char *err[] = {ERR_NOSUCHCHANNEL, user.getNickname().c_str(), channels[i].c_str(), ":No such channel", NULL};
-			srv.sendMsg(user.getFd(), Message(SERVER_NAME, err));
+			srv.sendMsg(user.getFd(), Message(ERR_NOSUCHCHANNEL(user.getNickname(), channels[i])));
 			continue;
 		}
 
 		if (chan->getUsers().find(user.getFd()) == chan->getUsers().end())
 		{
-			const char *err[] = {ERR_NOTONCHANNEL, user.getNickname().c_str(), chan->getName().c_str(), ":You are not on that channel", NULL};
-			srv.sendMsg(user.getFd(), Message(SERVER_NAME, err));
+			srv.sendMsg(user.getFd(), Message(ERR_NOTONCHANNEL(user.getNickname(), chan->getName())));
 			return (1);
 		}
 

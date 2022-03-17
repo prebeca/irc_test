@@ -38,11 +38,6 @@
 #define SERVER_NAME "IRCserv"
 #define VERSION "0.1"
 
-#define RPL_WELCOME_MSG "Welcome to the Internet Relay Network <nick>!<user>@<host>"
-#define RPL_YOURHOST_MSG "Your host is <servername>, running version <ver>"
-#define RPL_CREATED_MSG "This server was created <date>"
-#define RPL_MYINFO_MSG "<servername> <version> <available user modes> <available channel modes>"
-
 #ifndef BUFFER_SIZE
 #define BUFFER_SIZE 4096
 #endif

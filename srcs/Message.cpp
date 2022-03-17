@@ -38,7 +38,8 @@ void Message::parseMsg()
 	std::string msg = raw_msg;
 	size_t sub_len;
 
-	msg.erase(msg.find("\r\n", 0));
+	if (msg.find("\r\n", 0) != std::string::npos)
+		msg.erase(msg.find("\r\n", 0));
 	while ((sub_len = msg.find(' ')) != std::string::npos)
 	{
 		if (msg[0] == ':' && argv.size() > 0)

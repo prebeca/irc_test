@@ -13,8 +13,10 @@ SRC_LST	=	main.cpp\
 			CAP.cpp\
 			NICK.cpp\
 			PART.cpp\
+			NOTICE.cpp\
 			PASS.cpp\
 			QUIT.cpp\
+			MODE.cpp\
 			USER.cpp\
 			PRIVMSG.cpp\
 			TOPIC.cpp\

@@ -13,8 +13,7 @@ int PRIVMSG::execute(Server &srv, Client &user, const Message &msg) const
 {
 	if (!user.isRegistered())
 	{
-		const char *err[] = {ERR_NOTREGISTERED, ":You have not registered", NULL};
-		srv.sendMsg(user.getFd(), Message(SERVER_NAME, err));
+		srv.sendMsg(user.getFd(), Message(ERR_NOTREGISTERED(user.getNickname())));
 		return (1);
 	}
 
@@ -27,32 +26,28 @@ int PRIVMSG::execute(Server &srv, Client &user, const Message &msg) const
 		Channel *chan = srv.getChannel(target);
 		if (chan == NULL || chan->getUsers().find(user.getFd()) == chan->getUsers().end())
 		{
-			const char *rpl[] = {ERR_CANNOTSENDTOCHAN, user.getNickname().c_str(), target.c_str(), ":Cannot send to channel", NULL};
-			srv.sendMsg(user.getFd(), Message(SERVER_NAME, rpl));
+			srv.sendMsg(user.getFd(), Message(ERR_CANNOTSENDTOCHAN(user.getNickname(), chan->getName())));
 			return (1);
 		}
-
-		const char *rpl[] = {this->name.c_str(), chan->getName().c_str(), msg.getArgv()[2].c_str(), NULL};
 
 		std::map<int, Client *> target_list = chan->getUsers();
 		target_list.erase(user.getFd());
 		std::map<int, Client *>::const_iterator it = target_list.begin();
 		for (; it != target_list.end(); ++it)
-			srv.sendMsg(it->second->getFd(), Message(user.getNickname(), rpl));
+			srv.sendMsg(it->second->getFd(), Message(PRIVMSG_FORMAT(user.getNickname(), chan->getName(), msg.getArgv()[2])));
 	}
 	else
 	{
 		Client *target_user = srv.getUser(target);
 		if (target_user == NULL)
 		{
-			const char *rpl[] = {ERR_NOSUCHNICK, user.getNickname().c_str(), target.c_str(), ":No such nick", NULL};
-			srv.sendMsg(user.getFd(), Message(SERVER_NAME, rpl));
+			srv.sendMsg(user.getFd(), Message(ERR_NOSUCHNICK(user.getNickname(), target)));
 			return (1);
 		}
+		if (target_user->getMode().find('a') != std::string::npos)
+			;//TODO RPL_AWAY
 
-		// RPL_AWAY
-		const char *rpl[] = {this->name.c_str(), target_user->getNickname().c_str(), msg.getArgv()[2].c_str(), NULL};
-		srv.sendMsg(target_user->getFd(), Message(user.getNickname(), rpl));
+		srv.sendMsg(target_user->getFd(), Message(PRIVMSG_FORMAT(user.getNickname(), target_user->getNickname(), msg.getArgv()[2])));
 	}
 	return (0);
 }

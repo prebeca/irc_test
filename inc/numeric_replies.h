@@ -3,42 +3,48 @@
 
 #define QUIT_RETURN -42
 
-#define RPL_WELCOME "001"
-#define RPL_YOURHOST "002"
-#define RPL_CREATED "003"
-#define RPL_MYINFO "004"
+#ifndef CRLF
+# define CRLF "\r\n"
+#endif	//CRLF
 
-#define RPL_NOTOPIC "331" //"<channel> :No topic is set"
-#define RPL_TOPIC "332"	  //"<channel> :<topic>"
+#define RPL_WELCOME(nickname) ("001 " + nickname + " :Welcome to the Internet Relay Network " + nickname + CRLF)
+#define RPL_YOURHOST(nickname,servername,version) ("002 " + nickname + " :Your host is " + servername + ", running version " + version + CRLF)
+#define RPL_CREATED(nickname,date) ("003 " + nickname + " :This server was created " + date + CRLF)
+#define RPL_MYINFO(nickname,servername,version,usermodes,chanmodes) ("004 " + nickname + " :" + servername + " " + version + " " + usermodes + " " + chanmodes + CRLF)
 
-#define RPL_NAMREPLY "353"	 //<channel> :[ "@" / "+" ] <nick> *( " " [ "@" / "+" ] <nick> )
-#define RPL_ENDOFNAMES "366" //"<channel> :End of NAMES list"
+#define RPL_UMODEIS(nickname,usermodes) ("221 " + nickname + " " + usermodes + CRLF)
 
-#define ERR_NOSUCHNICK "401"	   //"<nickname> :No such nick/channel"
-#define ERR_NOSUCHCHANNEL "403"	   //"<channel name> :No such channel"
-#define ERR_CANNOTSENDTOCHAN "404" //"<channel name> :Cannot send to channel"
+#define RPL_NOTOPIC(nickname,channel) ("331 " + nickname + " " + channel + " :No topic is set" + CRLF)
+#define RPL_TOPIC(nickname,channel,topic) ("332 " + nickname + " " + channel + " :" + topic + CRLF)
 
-#define ERR_NONICKNAMEGIVEN "431"  //":No nickname given"
-#define ERR_ERRONEUSNICKNAME "432" //"<nick> :Erroneous nickname"
-#define ERR_NICKNAMEINUSE "433"	   //"<nick> :Nickname is already in use"
-#define ERR_NICKCOLLISION "436"	   //"<nick> :Nickname collision KILL from <user>@<host>"
+#define RPL_NAMREPLY(nickname,channel,userlist) ("353 " + nickname + " " + channel + " :" + userlist + CRLF)
+#define RPL_ENDOFNAMES(nickname,channel) ("366 " + nickname + " " + channel + " :End of NAMES list" + CRLF)
 
-#define ERR_UNAVAILRESOURCE "437" //"<nick/channel> :Nick/channel is temporarily unavailable"
+#define ERR_NOSUCHNICK(user_nickname,nickname) ("401 " + user_nickname + " " + nickname + " :No such nick" + CRLF)
+#define ERR_NOSUCHCHANNEL(nickname,channel) ("403 " + nickname + " " + channel + " :No such channel" + CRLF)
+#define ERR_CANNOTSENDTOCHAN(nickname, channel) ("404 " + nickname + " " + channel + " :Cannot send to channel" + CRLF)
 
-#define ERR_NOTONCHANNEL "442" //"<channel> :You're not on that channel"
+#define ERR_NONICKNAMEGIVEN(nickname) ("431 " + nickname + " :No nickname given" + CRLF)
+#define ERR_ERRONEUSNICKNAME(nickname,newnickname) ("432 " + nickname + " " + newnickname + " :Erroneous nickname" + CRLF)
+#define ERR_NICKNAMEINUSE(nickname,newnickname) ("433 " + nickname + " " + newnickname + " :Nickname is already in use" + CRLF)
 
-#define ERR_NOTREGISTERED "451" //":You have not registered"
+// #define ERR_UNAVAILRESOURCE "437" //"<nick/channel> :Nick/channel is temporarily unavailable"
 
-#define ERR_NEEDMOREPARAMS "461"   //"<command> :Not enough parameters"
-#define ERR_ALREADYREGISTRED "462" //":Unauthorized command (already registered)"
-#define ERR_PASSWDMISMATCH "464" // ":Password incorrect"
+#define ERR_NOTONCHANNEL(nickname,channel) ("442 " + nickname + " " + channel + " :You're not on that channel" + CRLF)
 
-#define ERR_INVITEONLYCHAN "473" // "<channel> :Cannot join channel (+i)"
-#define ERR_BANNEDFROMCHAN "474" //"<channel> :Cannot join channel (+b)"
-#define ERR_BADCHANNELKEY "475"	 // "<channel> :Cannot join channel (+k)"
+#define ERR_NOTREGISTERED(nickname) ("451 " + nickname + " :You have not registered" + CRLF)
 
+#define ERR_NEEDMOREPARAMS(nickname,command) ("461 " + nickname + " " + command + " :Not enough parameters" + CRLF)
+#define ERR_ALREADYREGISTRED(nickname) ("462 " + nickname + " :Unauthorized command (already registered)" + CRLF)
+#define ERR_PASSWDMISMATCH(nickname) ("464 " + nickname + " :Password incorrect" + CRLF)
 
-#define ERR_CHANOPRIVSNEEDED "482" //"<channel> :You're not channel operator"
-#define ERR_RESTRICTED "484"	   //":Your connection is restricted!"
+#define ERR_INVITEONLYCHAN(nickname,channel) ("473 " + nickname + " " + channel + " :Cannot join channel (+i)" + CRLF)
+#define ERR_BADCHANNELKEY(nickname,channel) ("475 " + nickname + " " + channel + " :Cannot join channel (+k)" + CRLF)
+
+#define ERR_CHANOPRIVSNEEDED(nickname,channel) ("482 " + nickname + " " + channel + " :You're not channel operator" + CRLF)
+// #define ERR_RESTRICTED(nickname) "484"	   //":Your connection is restricted!"
+
+#define ERR_UMODEUNKNOWNFLAG(nickname) ("501 " + nickname +" :Unknown MODE flag" + CRLF)
+#define ERR_USERSDONTMATCH(nickname) ("502" + nickname + " :Cannot change mode for other users" + CRLF)
 
 #endif // NUMERIC_REPLIES_H

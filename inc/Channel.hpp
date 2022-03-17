@@ -6,6 +6,13 @@
 
 #include "Client.hpp"
 
+#define VALID_CHANMODE "kim"
+/*
+   i - invite only;
+   k - key needed to enter channel.
+   m - channel is moderated.
+*/
+
 class Client;
 
 class Channel

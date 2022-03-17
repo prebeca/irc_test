@@ -13,7 +13,6 @@ public:
 	~JOIN();
 
 	int execute(Server &srv, Client &user, const Message& msg) const;
-	void sendTopic(Server &srv, Client &user, Channel& chan) const;
 	void sendNames(Server &srv, Client &user, Channel& chan) const;
 };
 
