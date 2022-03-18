@@ -4,9 +4,11 @@
 #pragma once
 
 #include <iostream>
+#include <cstdio>
 #include <string>
 #include <cstring>
 #include <cstdlib>
+#include <csignal>
 #include <cerrno>
 #include <unistd.h>
 #include <fcntl.h>
@@ -47,7 +49,7 @@ class CmdHandler;
 class Server
 {
 public:
-	Server(std::string name, std::string password = "", unsigned int port = 6667, std::string config_file = "");
+	Server(std::string name, std::string password = "", unsigned int port = 6667);
 	~Server();
 
 	std::string getPassword() const;
@@ -82,13 +84,14 @@ private:
 	Server(const Server &);
 	const Server &operator=(const Server &);
 
-	int init(std::string config_file);
+	int init();
 
 	int receiveMsg(int fd, int index);
+	int readServerCmd();
 	int handleCmd(int user_fd, const Message &msg);
 	int acceptClient();
 
-	std::string config_file;
+	bool exit;
 
 	std::string name;
 	std::string password;

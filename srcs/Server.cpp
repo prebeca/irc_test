@@ -1,5 +1,13 @@
 #include "Server.hpp"
 
+bool g_exit = false;
+
+static void handleSignal(int signum)
+{
+	if (signum == SIGINT || signum == SIGQUIT)
+		g_exit = true;
+}
+
 /**
  * @brief Construct a new Server object
  *
@@ -7,8 +15,8 @@
  * @param password password to connect to the server
  * @param port listenting port of the server, delault to 6667 (IRC default port)
  */
-Server::Server(std::string name, std::string password, unsigned int port, std::string config_file)
-	: config_file(config_file), name(name), password(password), port(port), cmd_handler(new CmdHandler())
+Server::Server(std::string name, std::string password, unsigned int port)
+	: exit(false), name(name), password(password), port(port), cmd_handler(new CmdHandler())
 {
 }
 
@@ -166,10 +174,11 @@ unsigned int Server::getPort() const
  *
  * @return return 0 or non null value if an error occured
  */
-int Server::init(std::string config_file)
+int Server::init()
 {
 
-	(void)config_file;
+	signal(SIGINT, handleSignal);
+	signal(SIGQUIT, handleSignal);
 
 	pollfd server_socket;
 	server_socket.fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -179,6 +188,13 @@ int Server::init(std::string config_file)
 	server_socket.events = POLLIN;
 
 	fd_lst.push_back(server_socket);
+
+	// pollfd serverCmd_input;
+	// serverCmd_input.fd = STDIN_FILENO;
+	// // fcntl(serverCmd_input.fd, F_SETFL, O_NONBLOCK);
+	// serverCmd_input.events = POLLIN;
+
+	// fd_lst.push_back(serverCmd_input);
 
 	sockaddr_in sock_addr;
 	sock_addr.sin_family = AF_INET;
@@ -205,7 +221,7 @@ int Server::init(std::string config_file)
  */
 int Server::start()
 {
-	this->init(this->config_file);
+	this->init();
 
 	if (listen(fd_lst.front().fd, SOMAXCONN) == -1)
 	{
@@ -213,7 +229,7 @@ int Server::start()
 		return (1);
 	}
 
-	while (true)
+	while (!g_exit)
 	{
 #ifdef DEBUG
 		std::cout << COLOR_YELLOW << "Waiting for ready fds... " << COLOR_RESET << std::endl;
@@ -243,11 +259,11 @@ int Server::start()
 
 int Server::handleCmd(int user_fd, const Message &msg)
 {
-	Client* user = getUser(user_fd);
+	Client *user = getUser(user_fd);
 	if (user == NULL)
 		return (1);
 
-	const ACommand* cmd = cmd_handler->getCmd(msg.getArgv()[0]);
+	const ACommand *cmd = cmd_handler->getCmd(msg.getArgv()[0]);
 	if (cmd != NULL)
 		return (cmd->execute(*this, *user, msg));
 	return (1);
@@ -289,9 +305,9 @@ int Server::receiveMsg(int fd, int index)
 #ifdef DEBUG
 			std::cout << COLOR_MAGENTA << "<- " << COLOR_RESET << msg.getRaw();
 #endif // DEBUG
-			
+
 			client->getBuffer().erase(0, cmd_end + 2);
-			
+
 			if (handleCmd(fd, msg) == QUIT_RETURN)
 				break;
 		}
@@ -315,7 +331,7 @@ int Server::acceptClient()
 {
 	int new_fd;
 	sockaddr_in new_soket;
-	socklen_t sok_len;
+	socklen_t sok_len = 0;
 
 	// accept all queued connection
 	while ((new_fd = accept(fd_lst[0].fd, (sockaddr *)&new_soket, &sok_len)) != -1)
@@ -347,8 +363,26 @@ int Server::acceptClient()
  */
 int Server::stop()
 {
-	std::vector<pollfd>::iterator it;
-	for (it = fd_lst.begin(); it != fd_lst.end(); ++it)
-		close(it->fd);
+
+	std::cout << COLOR_GREEN << "\b\bServer stopped. Good bye!\n"
+			  << COLOR_RESET;
+
+	close(this->fd_lst[0].fd);
+	while (!this->user_by_fd.empty())
+	{
+		std::map<int, Client *>::iterator it;
+
+		it = this->user_by_fd.begin();
+		removeClient(it->second);
+		this->user_by_fd.erase(it->first);
+	}
+	while (!this->chan_lst.empty())
+	{
+		std::map<std::string, Channel *>::iterator it;
+
+		it = this->chan_lst.begin();
+		delete it->second;
+		this->chan_lst.erase(it->first);
+	}
 	return (0);
 }
