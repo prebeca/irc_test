@@ -76,8 +76,15 @@ void JOIN::sendNames(Server &srv, Client &user, Channel& chan) const
 	for (; it != chan.getUsers().end(); ++it)
 	{	
 		// TODO check if invisible or operator
-		ss << " " << it->second->getNickname();
+		ss << " ";
+		if (chan.getOpers().find(it->second->getFd()) != chan.getOpers().end())
+			ss << "@";
+		ss << it->second->getNickname();
 	}
-	srv.sendMsg(user.getFd(), Message(RPL_NAMREPLY(user.getNickname(), chan.getName(), ss.str())));
+
+	std::string str(ss.str());
+	str.erase(0, 1);
+
+	srv.sendMsg(user.getFd(), Message(RPL_NAMREPLY(user.getNickname(), chan.getName(), str)));
 	srv.sendMsg(user.getFd(), Message(RPL_ENDOFNAMES(user.getNickname(), chan.getName())));
 }

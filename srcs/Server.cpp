@@ -303,7 +303,7 @@ int Server::receiveMsg(int fd, int index)
 			Message msg(client->getBuffer().substr(0, cmd_end + 2));
 
 #ifdef DEBUG
-			std::cout << COLOR_MAGENTA << "<- " << COLOR_RESET << msg.getRaw();
+			std::cout << COLOR_MAGENTA << "<- " << "[" << client->getNickname() << "]" << COLOR_RESET << msg.getRaw();
 #endif // DEBUG
 
 			client->getBuffer().erase(0, cmd_end + 2);
