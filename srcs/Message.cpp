@@ -1,4 +1,5 @@
 #include "Message.hpp"
+#include <iostream>
 
 Message::Message(std::string raw_msg)
 	: raw_msg(raw_msg)
@@ -44,18 +45,24 @@ void Message::parseMsg()
 	{
 		if (msg[0] == ':' && argv.size() > 0)
 		{
+			msg.erase(0, 1);
 			argv.push_back(msg);
 			msg.erase();
 			break;
 		}
-		argv.push_back(msg.substr(0, sub_len));
+		if (sub_len > 0)
+			argv.push_back(msg.substr(0, sub_len));
 		msg.erase(0, sub_len + 1);
 	}
 	if (!msg.empty())
+	{
+		if (msg[0] == ':' && argv.size() > 0)
+			msg.erase(0, 1);
 		argv.push_back(msg);
+	}
 	if (argv.size() > 0 && argv[0][0] == ':')
 	{
-		argv[0].erase(0, 1);
+		argv[0].erase(0, 1); 
 		prefix = argv[0];
 		argv.erase(argv.begin());
 	}

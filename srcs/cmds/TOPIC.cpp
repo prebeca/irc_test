@@ -50,6 +50,7 @@ int TOPIC::execute(Server &srv, Client &user, const Message &msg) const
 			srv.sendMsg(user.getFd(), Message(ERR_CHANOPRIVSNEEDED(user.getNickname(), chan->getName())));
 			return (1);
 		}
+		std::cout << "topic ->" << msg.getArgv()[2] << std::endl;
 		chan->setTopic(msg.getArgv()[2]);
 		srv.sendMsg(user.getFd(), Message(RPL_TOPIC(user.getNickname(), chan->getName(), chan->getTopic())));
 	}
