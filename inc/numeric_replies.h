@@ -17,7 +17,7 @@
 #define RPL_NOTOPIC(nickname,channel) ("331 " + nickname + " " + channel + " :No topic is set" + CRLF)
 #define RPL_TOPIC(nickname,channel,topic) ("332 " + nickname + " " + channel + " :" + topic + CRLF)
 
-#define RPL_NAMREPLY(nickname,channel,userlist) ("353 " + nickname + " " + channel + " :" + userlist + CRLF)
+#define RPL_NAMREPLY(nickname,channel,userlist) ("353 " + nickname + " =" + channel + " :" + userlist + CRLF)
 #define RPL_ENDOFNAMES(nickname,channel) ("366 " + nickname + " " + channel + " :End of NAMES list" + CRLF)
 
 #define ERR_NOSUCHNICK(user_nickname,nickname) ("401 " + user_nickname + " " + nickname + " :No such nick" + CRLF)

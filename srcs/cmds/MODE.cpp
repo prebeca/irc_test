@@ -47,11 +47,11 @@ int MODE::userMode(Server &srv, Client &user, const Message &msg) const
 
 	std::string flag = msg.getArgv()[2];
 
-	bool add_mode = false;
+	std::string add_mode;
 	if (flag[0] == '+')
-		add_mode = true;
+		add_mode = "+";
 	else if (flag[0] == '-')
-		add_mode = false;
+		add_mode = "-";
 	else
 	{
 		srv.sendMsg(user.getFd(), Message(ERR_UMODEUNKNOWNFLAG(user.getNickname())));
@@ -62,7 +62,7 @@ int MODE::userMode(Server &srv, Client &user, const Message &msg) const
 	{
 		if (flag[i] == 'O' || flag[i] == 'o')
 		{
-			if (add_mode)
+			if (add_mode == "+")
 				continue;
 			else
 				user.removeMode(flag[i]);
@@ -71,7 +71,7 @@ int MODE::userMode(Server &srv, Client &user, const Message &msg) const
 			continue;
 		else if (flag[i] == 'r')
 		{
-			if (add_mode)
+			if (add_mode == "+")
 				user.addMode(flag[i]);
 			else
 				continue;
@@ -79,7 +79,7 @@ int MODE::userMode(Server &srv, Client &user, const Message &msg) const
 		else
 		{
 			int ret = 0;
-			if (add_mode)
+			if (add_mode == "+")
 				ret = user.addMode(flag[i]);
 			else
 				ret = user.removeMode(flag[i]);
@@ -91,16 +91,8 @@ int MODE::userMode(Server &srv, Client &user, const Message &msg) const
 		}
 		std::string s_flag = flag.substr(0, 1) + flag.substr(i, 1);
 		std::string	userNickname = user.getNickname();
-		const char *rpl[] = {this->name.c_str(), userNickname.c_str(), s_flag.c_str(), NULL};
-	
-		std::map<std::string, Channel *>::const_iterator it = user.getChannels().begin();
-		for (; it != user.getChannels().end(); ++it)
-		{
-			Channel *chan = it->second;
-			std::map<int, Client *>::const_iterator it = chan->getUsers().begin();
-			for (; it != chan->getUsers().end(); ++it)
-				srv.sendMsg(it->second->getFd(), Message(user.getNickname(), rpl));
-		}
+
+		srv.sendMsg(user.getFd(), Message(":" + (std::string)SERVER_NAME + " MODE " + user.getNickname() + " " + add_mode + flag[i] + CRLF));
 	}
 	return (0);
 }

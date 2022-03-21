@@ -35,6 +35,15 @@ int NICK::execute(Server &srv, Client &user, const Message &msg) const
 		return (1);
 	}
 
+	std::map<std::string, Channel*>::const_iterator it_chan = user.getChannels().begin();
+	for (; it_chan != user.getChannels().end(); ++it_chan)
+	{
+		std::map<int, Client*> list = it_chan->second->getUsers();
+		std::map<int, Client *>::const_iterator it_user = list.begin();
+		for (; it_user != list.end(); ++it_user)
+			srv.sendMsg(it_user->second->getFd(), Message(":" + user.getNickname() + "!" + (std::string)SERVER_NAME + " " + this->name + " " + msg.getArgv()[1] + CRLF));
+	}
+
 	srv.removeUser(user);
 	user.setNickname(msg.getArgv()[1]);
 	srv.addUser(user);
