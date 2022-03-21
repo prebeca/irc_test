@@ -24,16 +24,12 @@ int LIST::execute(Server &srv, Client &user, const Message &msg) const
 
 	for (; it != ite; ++it) {
 		std::stringstream	ss;
-		std::cout << "hello1" << std::endl;
+		//const char *rpl[];
 		ss << "322 * #" << it->second->getName() << " " << it->second->getUsers().size();
-		std::string reply = ss.str();
-		std::cout << "hello2" << std::endl;
-		const char* reply_const = reply.c_str();
-		(void)reply2_const;
+		//std::string reply = ss.str();
+		//const char* reply_const = reply.c_str();
 		//srv.sendMsg(user.getFd(), Message(SERVER_NAME, &reply_const));
-		std::cout << "hello3" << std::endl;
 	}
-	std::cout << "hello4" << std::endl;
 	std::string reply2 = "323 * :End of LIST";
 	const char* reply2_const = reply2.c_str();
 	srv.sendMsg(user.getFd(), Message(SERVER_NAME, &reply2_const));
