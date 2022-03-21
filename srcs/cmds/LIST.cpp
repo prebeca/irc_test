@@ -17,38 +17,38 @@ int LIST::execute(Server &srv, Client &user, const Message &msg) const
 		return (1);
 	}
 
-	(void)msg;
-	std::map<std::string, Channel *>			channels = srv.getChannels();
-	std::map<std::string, Channel *>::iterator	it = channels.begin();
-	std::map<std::string, Channel *>::iterator	ite = channels.end();
+	if (msg.getArgv().size() == 1) {
+		std::map<std::string, Channel *>			channels = srv.getChannels();
+		std::map<std::string, Channel *>::iterator	it = channels.begin();
+		std::map<std::string, Channel *>::iterator	ite = channels.end();
 
-	for (; it != ite; ++it) {
-		std::stringstream	ss;
-<<<<<<< HEAD
-		//const char *rpl[];
-		ss << "322 * #" << it->second->getName() << " " << it->second->getUsers().size();
-		//std::string reply = ss.str();
-		//const char* reply_const = reply.c_str();
-		//srv.sendMsg(user.getFd(), Message(SERVER_NAME, &reply_const));
+		for (; it != ite; ++it) {
+			std::stringstream	ss;
+			ss << "322 * " << it->second->getName() << " " << it->second->getUsers().size() << " " << it->second->getTopic() << CRLF;
+			std::string reply = ss.str();
+			srv.sendMsg(user.getFd(), Message(reply));
+		}
 	}
-	std::string reply2 = "323 * :End of LIST";
-	const char* reply2_const = reply2.c_str();
-	srv.sendMsg(user.getFd(), Message(SERVER_NAME, &reply2_const));
-=======
-		// std::cout << "hello1" << std::endl;
-		ss << "322 * " << it->second->getName() << " " << it->second->getUsers().size() << CRLF;
-		std::string reply = ss.str();
-		// std::cout << "hello2" << std::endl;
-		// const char* reply_const = reply.c_str();
-		// (void)reply2_const;
-		srv.sendMsg(user.getFd(), Message(reply));
-		// std::cout << "hello3" << std::endl;
+	else
+	{
+		std::vector<std::string> channels;
+		channels = utils::split(msg.getArgv()[1], ",");
+
+		for (size_t i = 0; i < channels.size(); ++i)
+		{
+			Channel *chan = srv.getChannel(channels[i]);
+			if (chan != NULL)
+			{
+				std::stringstream	ss;
+				ss << "322 * " << chan->getName() << " " << chan->getUsers().size() << " " << chan->getTopic() << CRLF;
+				std::string reply = ss.str();
+				srv.sendMsg(user.getFd(), Message(reply));
+			}
+
+		}
 	}
-	// std::cout << "hello4" << std::endl;
-	// std::string reply2 = "323 * :End of LIST" + CRLF;
-	// const char* reply2_const = reply2.c_str();
+	
 	srv.sendMsg(user.getFd(), Message("323 * :End of LIST\r\n"));
->>>>>>> d3a4fd537efe444cb950fec9f3fe261ccd147a44
 
 	return 0;
 }
