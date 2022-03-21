@@ -22,6 +22,7 @@ SRC_LST	=	main.cpp\
 			TOPIC.cpp\
 			KICK.cpp\
 			JOIN.cpp\
+			LIST.cpp\
 			CmdHandler.cpp\
 			ACommand.cpp\
 			utils.cpp

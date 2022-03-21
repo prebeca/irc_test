@@ -46,7 +46,8 @@ int PART::execute(Server &srv, Client &user, const Message &msg) const
 			return (1);
 		}
 
-		const char *rpl[] = {this->name.c_str(), chan->getName().c_str(), part_msg.c_str(), NULL};
+		std::string	chanName = chan->getName();
+		const char *rpl[] = {this->name.c_str(), chanName.c_str(), part_msg.c_str(), NULL};
 
 		std::map<int, Client *>::const_iterator it = chan->getUsers().begin();
 		for (; it != chan->getUsers().end(); ++it)

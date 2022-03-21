@@ -24,7 +24,8 @@ int NOTICE::execute(Server &srv, Client &user, const Message &msg) const
 		if (chan == NULL || chan->getUsers().find(user.getFd()) == chan->getUsers().end())
 			return (1);
 
-		const char *rpl[] = {this->name.c_str(), chan->getName().c_str(), msg.getArgv()[2].c_str(), NULL};
+		std::string	chanName = chan->getName();
+		const char *rpl[] = {this->name.c_str(), chanName.c_str(), msg.getArgv()[2].c_str(), NULL};
 
 		std::map<int, Client *> target_list = chan->getUsers();
 		target_list.erase(user.getFd());
@@ -39,7 +40,8 @@ int NOTICE::execute(Server &srv, Client &user, const Message &msg) const
 			return (1);
 
 		// TODO RPL_AWAY
-		const char *rpl[] = {this->name.c_str(), target_user->getNickname().c_str(), msg.getArgv()[2].c_str(), NULL};
+		std::string	targetNickname = target_user->getNickname();
+		const char *rpl[] = {this->name.c_str(), targetNickname.c_str(), msg.getArgv()[2].c_str(), NULL};
 		srv.sendMsg(target_user->getFd(), Message(user.getNickname(), rpl));
 	}
 	return (0);

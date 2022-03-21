@@ -12,6 +12,7 @@
 #include "cmds/PASS.hpp"
 #include "cmds/MODE.hpp"
 #include "cmds/NOTICE.hpp"
+#include "cmds/LIST.hpp"
 
 CmdHandler::CmdHandler()
 {
@@ -28,6 +29,7 @@ CmdHandler::CmdHandler()
 	this->cmds["PASS"] = new PASS();
 	this->cmds["MODE"] = new MODE();
 	this->cmds["NOTICE"] = new NOTICE();
+	this->cmds["LIST"] = new LIST();
 }
 
 CmdHandler::~CmdHandler()

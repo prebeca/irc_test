@@ -90,7 +90,8 @@ int MODE::userMode(Server &srv, Client &user, const Message &msg) const
 			}
 		}
 		std::string s_flag = flag.substr(0, 1) + flag.substr(i, 1);
-		const char *rpl[] = {this->name.c_str(), user.getNickname().c_str(), s_flag.c_str(), NULL};
+		std::string	userNickname = user.getNickname();
+		const char *rpl[] = {this->name.c_str(), userNickname.c_str(), s_flag.c_str(), NULL};
 	
 		std::map<std::string, Channel *>::const_iterator it = user.getChannels().begin();
 		for (; it != user.getChannels().end(); ++it)
