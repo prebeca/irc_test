@@ -74,8 +74,7 @@ void JOIN::sendNames(Server &srv, Client &user, Channel& chan) const
 
 	std::map<int, Client *>::const_iterator it = chan.getUsers().begin();
 	for (; it != chan.getUsers().end(); ++it)
-	{	
-		// TODO check if invisible or operator
+	{
 		ss << " ";
 		if (chan.getOpers().find(it->second->getFd()) != chan.getOpers().end())
 			ss << "@";

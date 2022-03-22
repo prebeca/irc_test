@@ -25,7 +25,10 @@ int NICK::execute(Server &srv, Client &user, const Message &msg) const
 
 	if (utils::strToUpper(user.getNickname()) != utils::strToUpper(msg.getArgv()[1]) && srv.getUser(msg.getArgv()[1]) != NULL)
 	{
-		srv.sendMsg(user.getFd(), Message(ERR_NICKNAMEINUSE(user.getNickname(), msg.getArgv()[1])));
+		std::string usernick = user.getNickname();
+		if (usernick.empty())
+			usernick = "*";
+		srv.sendMsg(user.getFd(), Message(ERR_NICKNAMEINUSE(usernick, msg.getArgv()[1])));
 		return (1);
 	}
 
@@ -48,7 +51,7 @@ int NICK::execute(Server &srv, Client &user, const Message &msg) const
 	user.setNickname(msg.getArgv()[1]);
 	srv.addUser(user);
 
-	srv.sendMsg(user.getFd(), Message(":ircserv " + msg.getRaw()));
+	// srv.sendMsg(user.getFd(), Message(":" + (std::string)SERVER_NAME + " " + msg.getRaw()));
 
 	if (!user.isRegistered() && !user.getUsername().empty())
 		srv.registerUser(user);

@@ -373,14 +373,17 @@ int Server::stop()
 		std::map<int, Client *>::iterator it;
 
 		it = this->user_by_fd.begin();
+		if (it == this->user_by_fd.end())
+			break;
 		removeClient(it->second);
-		this->user_by_fd.erase(it->first);
 	}
 	while (!this->chan_lst.empty())
 	{
 		std::map<std::string, Channel *>::iterator it;
 
 		it = this->chan_lst.begin();
+		if (it == this->chan_lst.end())
+			break;
 		delete it->second;
 		this->chan_lst.erase(it->first);
 	}
