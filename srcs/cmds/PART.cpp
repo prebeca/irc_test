@@ -63,6 +63,6 @@ int PART::execute(Server &srv, Client &user, const Message &msg) const
 			delete chan;
 		}
 	}
-
+	// to do supprimer chanel si lus d'user
 	return (0);
 }
