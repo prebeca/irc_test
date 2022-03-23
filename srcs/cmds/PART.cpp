@@ -56,6 +56,12 @@ int PART::execute(Server &srv, Client &user, const Message &msg) const
 		chan->removeUser(user);
 		chan->removeOper(user);
 		user.removeChannel(*chan);
+
+		if (chan->getUsers().empty())
+		{
+			srv.removeChannel(chan->getName());
+			delete chan;
+		}
 	}
 	// to do supprimer chanel si lus d'user
 	return (0);

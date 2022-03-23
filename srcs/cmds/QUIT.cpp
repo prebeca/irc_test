@@ -26,6 +26,13 @@ int QUIT::execute(Server &srv, Client &user, const Message &msg) const
 
 		chan->removeUser(user);
 		chan->removeOper(user);
+		
+		if (chan->getUsers().empty())
+		{
+			srv.removeChannel(chan->getName());
+			delete chan;
+			continue;
+		}
 
 		const char *rpl[] = {this->name.c_str(), quit_msg.c_str(), NULL};
 
