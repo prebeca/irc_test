@@ -41,9 +41,13 @@ int JOIN::execute(Server &srv, Client &user, const Message &msg) const
 		}
 		else if (chan->getMode().find('i') != std::string::npos)
 		{
-			// TODO handle invite
-			srv.sendMsg(user.getFd(), Message(ERR_INVITEONLYCHAN(user.getNickname(), chan->getName())));
-			continue;
+			if (chan->getInvitations().find(user.getFd()) == chan->getInvitations().end())
+			{
+				srv.sendMsg(user.getFd(), Message(ERR_INVITEONLYCHAN(user.getNickname(), chan->getName())));
+				continue;
+			}
+			else	
+				chan->removeInvitation(user);
 		}
 		else if (chan->getMode().find('k') != std::string::npos && i <= keys.size() && chan->getKey() != keys[i])
 		{

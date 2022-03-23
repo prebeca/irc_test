@@ -14,6 +14,8 @@
 
 #define RPL_UMODEIS(nickname,usermodes) ("221 " + nickname + " " + usermodes + CRLF)
 
+#define RPL_CHANNELMODEIS(nickname,channel,chanmodes) ("324 " + nickname + " " + channel + " " + chanmodes + CRLF)
+
 #define RPL_NOTOPIC(nickname,channel) ("331 " + nickname + " " + channel + " :No topic is set" + CRLF)
 #define RPL_TOPIC(nickname,channel,topic) ("332 " + nickname + " " + channel + " :" + topic + CRLF)
 
@@ -31,6 +33,7 @@
 // #define ERR_UNAVAILRESOURCE "437" //"<nick/channel> :Nick/channel is temporarily unavailable"
 
 #define ERR_NOTONCHANNEL(nickname,channel) ("442 " + nickname + " " + channel + " :You're not on that channel" + CRLF)
+#define ERR_USERONCHANNEL(user_nickname, nickname, channel)	("443 " + user_nickname + " " + nickname + " " + channel + " :is already on channel" + CRLF)
 
 #define ERR_NOTREGISTERED(nickname) ("451 " + nickname + " :You have not registered" + CRLF)
 
