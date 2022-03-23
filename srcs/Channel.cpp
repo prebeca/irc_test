@@ -81,7 +81,7 @@ std::string Channel::getKey() const
 
 int Channel::addMode(char mode)
 {
-	if (std::string(VALID_USERMODE).find(mode) == std::string::npos)
+	if (std::string(VALID_CHANMODE).find(mode) == std::string::npos)
 		return (1); // invalid usermode
 	if (this->mode.find(mode) == std::string::npos)
 		this->mode.push_back(mode);
@@ -90,7 +90,7 @@ int Channel::addMode(char mode)
 
 int Channel::removeMode(char mode)
 {
-	if (std::string(VALID_USERMODE).find(mode) == std::string::npos)
+	if (std::string(VALID_CHANMODE).find(mode) == std::string::npos)
 		return (1); // invalid usermode
 	if (this->mode.find(mode) != std::string::npos)
 		this->mode.erase(this->mode.find(mode), 1);

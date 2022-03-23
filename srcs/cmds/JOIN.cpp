@@ -49,10 +49,13 @@ int JOIN::execute(Server &srv, Client &user, const Message &msg) const
 			else	
 				chan->removeInvitation(user);
 		}
-		else if (chan->getMode().find('k') != std::string::npos && i <= keys.size() && chan->getKey() != keys[i])
+		else if (chan->getMode().find('k') != std::string::npos)
 		{
-			srv.sendMsg(user.getFd(), Message(ERR_BADCHANNELKEY(user.getNickname(), chan->getName())));
-			continue;
+			if (keys.empty() || i > keys.size() || chan->getKey() != keys[i])
+			{
+				srv.sendMsg(user.getFd(), Message(ERR_BADCHANNELKEY(user.getNickname(), chan->getName())));
+				continue;
+			}
 		}
 
 		chan->addUser(user);
