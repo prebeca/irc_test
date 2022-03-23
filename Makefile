@@ -23,6 +23,7 @@ SRC_LST	=	main.cpp\
 			KICK.cpp\
 			JOIN.cpp\
 			LIST.cpp\
+			INVITE.cpp\
 			WHO.cpp\
 			CmdHandler.cpp\
 			ACommand.cpp\

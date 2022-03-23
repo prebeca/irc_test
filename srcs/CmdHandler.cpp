@@ -13,6 +13,7 @@
 #include "cmds/MODE.hpp"
 #include "cmds/NOTICE.hpp"
 #include "cmds/LIST.hpp"
+#include "cmds/INVITE.hpp"
 #include "cmds/WHO.hpp"
 
 CmdHandler::CmdHandler()
@@ -31,6 +32,7 @@ CmdHandler::CmdHandler()
 	this->cmds["MODE"] = new MODE();
 	this->cmds["NOTICE"] = new NOTICE();
 	this->cmds["LIST"] = new LIST();
+	this->cmds["INVITE"] = new INVITE();
 	this->cmds["WHO"] = new WHO();
 }
 

@@ -44,6 +44,21 @@ const std::map<int, Client *> &Channel::getOpers()
 	return (this->operators);
 }
 
+bool Channel::addInvitation(Client &usr)
+{
+	return (this->invitations.insert(std::make_pair(usr.getFd(), &usr)).second);
+}
+
+bool Channel::removeInvitation(Client &usr)
+{
+	return (this->invitations.erase(usr.getFd()));
+}
+
+const std::map<int, Client *> &Channel::getInvitations()
+{
+	return (this->invitations);
+}
+
 void Channel::setTopic(std::string topic)
 {
 	this->topic = topic;

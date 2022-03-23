@@ -31,6 +31,10 @@ public:
 	bool removeOper(Client &usr);
 	const std::map<int, Client *> &getOpers();
 
+	bool addInvitation(Client &usr);
+	bool removeInvitation(Client &usr);
+	const std::map<int, Client *> &getInvitations();
+
 	void setTopic(std::string topic);
 	std::string getTopic() const;
 
@@ -49,6 +53,7 @@ private:
 	std::string name;
 	std::map<int, Client *> operators;
 	std::map<int, Client *> users;
+	std::map<int, Client *> invitations;
 	std::string topic;
 	std::string mode;
 	std::string key;
