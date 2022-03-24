@@ -118,3 +118,9 @@ std::string &Client::getBuffer()
 {
 	return (buffer);
 }
+
+std::string Client::getFullName() const
+{
+	return(nickname + "!" + username + "@" + inet_ntoa(socket.sin_addr));
+}
+

@@ -3,7 +3,7 @@
 
 #include "ACommand.hpp"
 
-#define PRIVMSG_FORMAT(nickname,target,msg) (":" + nickname + " PRIVMSG " + target + " :" + msg + CRLF)
+#define PRIVMSG_FORMAT(nickname,target,msg) (" PRIVMSG " + target + " :" + msg + CRLF)
 
 class ACommand;
 

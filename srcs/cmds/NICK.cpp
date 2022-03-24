@@ -51,8 +51,6 @@ int NICK::execute(Server &srv, Client &user, const Message &msg) const
 	user.setNickname(msg.getArgv()[1]);
 	srv.addUser(user);
 
-	// srv.sendMsg(user.getFd(), Message(":" + (std::string)SERVER_NAME + " " + msg.getRaw()));
-
 	if (!user.isRegistered() && !user.getUsername().empty())
 		srv.registerUser(user);
 	return (0);

@@ -9,6 +9,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+
 #include "Channel.hpp"
 
 #define VALID_USERMODE "aiwroOs"
@@ -59,6 +63,8 @@ public:
 	std::string getMode() const;
 
 	std::string &getBuffer();
+
+	std::string getFullName() const;
 
 private:
 	Client();
