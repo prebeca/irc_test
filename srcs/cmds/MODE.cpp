@@ -209,10 +209,10 @@ int MODE::chanMode(Server &srv, Client &user, const Message &msg) const
 
 		if (msg.getArgv().size() == 3)
 			for (; it != channel->getUsers().end(); ++it)
-				srv.sendMsg(it->second->getFd(), Message(":" + user.getNickname() + " MODE " + channel->getName() + " " + add_mode + flag[i] + CRLF));
+				srv.sendMsg(it->second->getFd(), Message(":" + user.getFullName() + " MODE " + channel->getName() + " " + add_mode + flag[i] + CRLF));
 		else if (msg.getArgv().size() == 4)
 			for (; it != channel->getUsers().end(); ++it)
-				srv.sendMsg(it->second->getFd(), Message(":" + user.getNickname() + " MODE " + channel->getName() + " " + add_mode + flag[i] + " " + msg.getArgv()[3] + CRLF));
+				srv.sendMsg(it->second->getFd(), Message(":" + user.getFullName() + " MODE " + channel->getName() + " " + add_mode + flag[i] + " " + msg.getArgv()[3] + CRLF));
 	}
 
 	return (0);
