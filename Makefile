@@ -24,7 +24,6 @@ SRC_LST	=	main.cpp\
 			JOIN.cpp\
 			LIST.cpp\
 			INVITE.cpp\
-			WHO.cpp\
 			CmdHandler.cpp\
 			ACommand.cpp\
 			utils.cpp

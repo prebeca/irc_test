@@ -39,7 +39,6 @@ int NOTICE::execute(Server &srv, Client &user, const Message &msg) const
 		if (target_user == NULL)
 			return (1);
 
-		// TODO RPL_AWAY
 		std::string	targetNickname = target_user->getNickname();
 		const char *rpl[] = {this->name.c_str(), targetNickname.c_str(), msg.getArgv()[2].c_str(), NULL};
 		srv.sendMsg(target_user->getFd(), Message(user.getNickname(), rpl));
