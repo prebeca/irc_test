@@ -17,7 +17,7 @@ int MODE::execute(Server &srv, Client &user, const Message &msg) const
 		return (1);
 	}
 
-	if (msg.getArgv().size() < 3)
+	if (msg.getArgv().size() < 2)
 	{
 		srv.sendMsg(user.getFd(), Message(ERR_NEEDMOREPARAMS(user.getNickname(), this->name)));
 		return (1);
@@ -142,17 +142,17 @@ int MODE::chanMode(Server &srv, Client &user, const Message &msg) const
 		}
 		else if (flag[i] == 'k')
 		{
-			if (msg.getArgv().size() < 4)
-			{
-				srv.sendMsg(user.getFd(), Message(ERR_NEEDMOREPARAMS(user.getNickname(), this->name)));
-				return (1);
-			}
 			if (add_mode == "+")
 			{
+				if (msg.getArgv().size() < 4)
+				{
+					srv.sendMsg(user.getFd(), Message(ERR_NEEDMOREPARAMS(user.getNickname(), this->name)));
+					return (1);
+				}
 				channel->setKey(msg.getArgv()[3]);
 				channel->addMode(flag[i]);
 			}
-			else if (add_mode == "-" && channel->getMode() == msg.getArgv()[3])
+			else if (add_mode == "-")
 			{
 				channel->setKey("");
 				channel->removeMode(flag[i]);
