@@ -196,7 +196,6 @@ int MODE::chanMode(Server &srv, Client &user, const Message &msg) const
 				else
 					continue;
 			}
-			
 		}
 		else
 		{

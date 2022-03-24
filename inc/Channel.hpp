@@ -11,7 +11,7 @@
    i - invite only;
    k - key needed to enter channel.
    m - channel is moderated.
-   o - addd operator
+   o - add operator
 */
 
 class Client;

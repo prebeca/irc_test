@@ -54,7 +54,7 @@ int Server::registerUser(Client &user)
 	this->sendMsg(user.getFd(), Message(RPL_WELCOME(user.getNickname())));
 	this->sendMsg(user.getFd(), Message(RPL_YOURHOST(user.getNickname(), SERVER_NAME, VERSION)));
 	this->sendMsg(user.getFd(), Message(RPL_CREATED(user.getNickname(), "today")));
-	this->sendMsg(user.getFd(), Message(RPL_MYINFO(user.getNickname(), SERVER_NAME, VERSION, "<usermods>", "<chanmodes>")));
+	this->sendMsg(user.getFd(), Message(RPL_MYINFO(user.getNickname(), SERVER_NAME, VERSION, VALID_USERMODE, VALID_CHANMODE)));
 
 	user.setRegistered(true);
 	std::cout << COLOR_GREEN << user.getNickname() << " succesfully registered !" << COLOR_RESET << std::endl;
