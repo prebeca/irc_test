@@ -3,6 +3,8 @@
 
 #include "ACommand.hpp"
 
+#define NOTICE_FORMAT(prefix,nickname,target,msg) (":" + prefix + " NOTICE " + target + " :" + msg + CRLF)
+
 class ACommand;
 
 class NOTICE: public ACommand

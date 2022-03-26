@@ -53,13 +53,9 @@ int KICK::execute(Server &srv, Client &user, const Message &msg) const
 	if (msg.getArgv().size() >= 4)
 		kick_msg = msg.getArgv()[3];
 
-	std::string chanName = chan->getName();
-	std::string targetNickname = target->getNickname();
-	const char *rpl[] = {this->name.c_str(), chanName.c_str(), targetNickname.c_str(), kick_msg.c_str(), NULL};
-
 	std::map<int, Client *>::const_iterator it = chan->getUsers().begin();
 	for (; it != chan->getUsers().end(); ++it)
-		srv.sendMsg(it->second->getFd(), Message(user.getFullName(), rpl));
+		srv.sendMsg(it->second->getFd(), Message(KICK_MESSAGE(user.getFullName(), chan->getName(), target->getNickname(), kick_msg)));
 
 	chan->removeOper(*target);
 	chan->removeUser(*target);

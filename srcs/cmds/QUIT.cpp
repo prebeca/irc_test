@@ -34,11 +34,9 @@ int QUIT::execute(Server &srv, Client &user, const Message &msg) const
 			continue;
 		}
 
-		const char *rpl[] = {this->name.c_str(), quit_msg.c_str(), NULL};
-
 		std::map<int, Client *>::const_iterator it = chan->getUsers().begin();
 		for (; it != chan->getUsers().end(); ++it)
-			srv.sendMsg(it->second->getFd(), Message(user.getFullName(), rpl));
+			srv.sendMsg(it->second->getFd(), Message(QUIT_MESSAGE(user.getFullName(), quit_msg)));
 	}
 
 	std::cout << COLOR_GREEN << "Client quit: " << inet_ntoa(user.getSocket().sin_addr) << COLOR_RESET << std::endl;

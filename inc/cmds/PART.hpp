@@ -3,6 +3,8 @@
 
 #include "ACommand.hpp"
 
+#define PART_MESSAGE(prefix, channel, msg) (":" + prefix + " PART " + channel + " :" + msg + CRLF)
+
 class ACommand;
 
 class PART: public ACommand

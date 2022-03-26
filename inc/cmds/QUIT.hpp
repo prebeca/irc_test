@@ -3,6 +3,8 @@
 
 #include "ACommand.hpp"
 
+#define QUIT_MESSAGE(prefix, message) (":" + prefix + " QUIT :" + message + CRLF)
+
 class ACommand;
 
 class QUIT: public ACommand

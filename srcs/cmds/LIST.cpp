@@ -17,16 +17,17 @@ int LIST::execute(Server &srv, Client &user, const Message &msg) const
 		return (1);
 	}
 
-	if (msg.getArgv().size() == 1) {
-		std::map<std::string, Channel *>			channels = srv.getChannels();
-		std::map<std::string, Channel *>::iterator	it = channels.begin();
-		std::map<std::string, Channel *>::iterator	ite = channels.end();
+	if (msg.getArgv().size() == 1)
+	{
+		std::map<std::string, Channel *> channels = srv.getChannels();
+		std::map<std::string, Channel *>::iterator it = channels.begin();
+		std::map<std::string, Channel *>::iterator ite = channels.end();
 
-		for (; it != ite; ++it) {
-			std::stringstream	ss;
-			ss << "322 * " << it->second->getName() << " " << it->second->getUsers().size() << " " << it->second->getTopic() << CRLF;
-			std::string reply = ss.str();
-			srv.sendMsg(user.getFd(), Message(reply));
+		for (; it != ite; ++it)
+		{
+			std::stringstream nb_users;
+			nb_users << it->second->getUsers().size();
+			srv.sendMsg(user.getFd(), Message(RPL_LIST(user.getNickname(), it->second->getName(), nb_users.str(), it->second->getTopic())));
 		}
 	}
 	else
@@ -39,16 +40,14 @@ int LIST::execute(Server &srv, Client &user, const Message &msg) const
 			Channel *chan = srv.getChannel(channels[i]);
 			if (chan != NULL)
 			{
-				std::stringstream	ss;
-				ss << "322 * " << chan->getName() << " " << chan->getUsers().size() << " " << chan->getTopic() << CRLF;
-				std::string reply = ss.str();
-				srv.sendMsg(user.getFd(), Message(reply));
+				std::stringstream nb_users;
+				nb_users << chan->getUsers().size();
+				srv.sendMsg(user.getFd(), Message(RPL_LIST(user.getNickname(), chan->getName(), nb_users.str(), chan->getTopic())));
 			}
-
 		}
 	}
-	
-	srv.sendMsg(user.getFd(), Message("323 * :End of LIST\r\n"));
+
+	srv.sendMsg(user.getFd(), Message(RPL_LISTEND(user.getNickname())));
 
 	return 0;
 }

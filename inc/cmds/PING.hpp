@@ -3,6 +3,8 @@
 
 #include "ACommand.hpp"
 
+#define PING_MESSAGE(prefix, target, nickname) (":" + prefix + " PONG " + target + " :" + nickname + CRLF)
+
 class ACommand;
 
 class PING: public ACommand

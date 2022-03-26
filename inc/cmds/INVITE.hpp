@@ -3,6 +3,8 @@
 
 #include "ACommand.hpp"
 
+#define INVITE_MSG(prefix, target, channel) (":" + prefix + " INVITE " + target + " :" + channel + CRLF)
+
 class ACommand;
 
 class INVITE: public ACommand

@@ -11,9 +11,6 @@ PING::~PING()
 
 int PING::execute(Server &srv, Client &user, const Message &msg) const
 {
-	(void)msg;
-	std::string nickname = user.getFullName();
-	const char *rpl[] = {"PONG", nickname.c_str(), NULL};
-	srv.sendMsg(user.getFd(), Message(SERVER_NAME, rpl));
+	srv.sendMsg(user.getFd(), Message(PING_MESSAGE((std::string)SERVER_NAME, msg.getArgv()[1], user.getNickname())));
 	return (0);
 }

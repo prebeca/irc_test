@@ -4,6 +4,8 @@
 #include "ACommand.hpp"
 #include "utils.h"
 
+#define JOIN_MESSAGE(prefix, channel) (":" + prefix + " JOIN " + channel + CRLF)
+
 class ACommand;
 
 class JOIN: public ACommand

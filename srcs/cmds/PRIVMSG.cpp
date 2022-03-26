@@ -34,7 +34,7 @@ int PRIVMSG::execute(Server &srv, Client &user, const Message &msg) const
 		target_list.erase(user.getFd());
 		std::map<int, Client *>::const_iterator it = target_list.begin();
 		for (; it != target_list.end(); ++it)
-			srv.sendMsg(it->second->getFd(), Message(":" + user.getFullName() + " " + PRIVMSG_FORMAT(user.getNickname(), chan->getName(), msg.getArgv()[2])));
+			srv.sendMsg(it->second->getFd(), Message(PRIVMSG_FORMAT(user.getFullName(), user.getNickname(), chan->getName(), msg.getArgv()[2])));
 	}
 	else
 	{
@@ -45,7 +45,7 @@ int PRIVMSG::execute(Server &srv, Client &user, const Message &msg) const
 			return (1);
 		}
 
-		srv.sendMsg(target_user->getFd(), Message(":" + user.getFullName() + " " + PRIVMSG_FORMAT(user.getNickname(), target_user->getNickname(), msg.getArgv()[2])));
+		srv.sendMsg(target_user->getFd(), Message(PRIVMSG_FORMAT(user.getFullName(), user.getNickname(), target_user->getNickname(), msg.getArgv()[2])));
 	}
 	return (0);
 }

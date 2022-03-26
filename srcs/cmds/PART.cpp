@@ -46,12 +46,9 @@ int PART::execute(Server &srv, Client &user, const Message &msg) const
 			return (1);
 		}
 
-		std::string	chanName = chan->getName();
-		const char *rpl[] = {this->name.c_str(), chanName.c_str(), part_msg.c_str(), NULL};
-
 		std::map<int, Client *>::const_iterator it = chan->getUsers().begin();
 		for (; it != chan->getUsers().end(); ++it)
-			srv.sendMsg(it->second->getFd(), Message(user.getFullName(), rpl));
+			srv.sendMsg(it->second->getFd(), Message(PART_MESSAGE(user.getFullName(), chan->getName(), part_msg)));
 		
 		chan->removeUser(user);
 		chan->removeOper(user);

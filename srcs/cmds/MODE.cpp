@@ -92,7 +92,7 @@ int MODE::userMode(Server &srv, Client &user, const Message &msg) const
 		std::string s_flag = flag.substr(0, 1) + flag.substr(i, 1);
 		std::string	userNickname = user.getNickname();
 
-		srv.sendMsg(user.getFd(), Message(":" + (std::string)SERVER_NAME + " MODE " + user.getNickname() + " " + add_mode + flag[i] + CRLF));
+		srv.sendMsg(user.getFd(), Message(MODE_U_MESSAGE(user.getFullName(), user.getNickname(), flag)));
 	}
 	return (0);
 }

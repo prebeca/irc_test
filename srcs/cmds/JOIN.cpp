@@ -65,7 +65,7 @@ int JOIN::execute(Server &srv, Client &user, const Message &msg) const
 
 		std::map<int, Client *>::const_iterator it = chan->getUsers().begin();
 		for (; it != chan->getUsers().end(); ++it)
-			srv.sendMsg(it->second->getFd(), Message(":" + user.getFullName() + " " + this->name + " " + chan->getName() + CRLF));
+			srv.sendMsg(it->second->getFd(), Message(JOIN_MESSAGE(user.getFullName(), chan->getName())));
 
 		if (!chan->getTopic().empty())
 			srv.sendMsg(user.getFd(), Message(RPL_TOPIC(user.getNickname(), chan->getName(), chan->getTopic())));
@@ -91,6 +91,6 @@ void JOIN::sendNames(Server &srv, Client &user, Channel& chan) const
 	std::string str(ss.str());
 	str.erase(0, 1);
 
-	srv.sendMsg(user.getFd(), Message(":" + (std::string)SERVER_NAME + " " + RPL_NAMREPLY(user.getNickname(), chan.getName(), str)));
-	srv.sendMsg(user.getFd(), Message(":" + (std::string)SERVER_NAME + " " + RPL_ENDOFNAMES(user.getNickname(), chan.getName())));
+	srv.sendMsg(user.getFd(), Message(RPL_NAMREPLY(user.getNickname(), chan.getName(), str)));
+	srv.sendMsg(user.getFd(), Message(RPL_ENDOFNAMES(user.getNickname(), chan.getName())));
 }

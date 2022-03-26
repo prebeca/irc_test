@@ -59,13 +59,8 @@ int INVITE::execute(Server &srv, Client &user, const Message &msg) const
 
 	channel->addInvitation(*target);
 
-	std::string replyTarget;
-	replyTarget = ":" + user.getNickname() + "!" + (std::string)SERVER_NAME + " " + this->name + " " + target->getNickname() + " :" + channel->getName() + CRLF;
-	srv.sendMsg(target->getFd(), Message(replyTarget));
-
-	std::string	replySender;
-	replySender = ":" + user.getNickname() + " 341 " + user.getNickname() + " " + target->getNickname() + " :" + channel->getName() + CRLF;
-	srv.sendMsg(user.getFd(), Message(replySender));
+	srv.sendMsg(user.getFd(), Message(RPL_INVITING(user.getNickname(), target->getNickname(), channel->getName())));
+	srv.sendMsg(target->getFd(), Message(INVITE_MSG(user.getFullName(), target->getNickname(), channel->getName())));
 
 	return (0);
 }

@@ -37,15 +37,20 @@ int NICK::execute(Server &srv, Client &user, const Message &msg) const
 		srv.sendMsg(user.getFd(), Message(ERR_ERRONEUSNICKNAME(user.getNickname(), msg.getArgv()[1])));
 		return (1);
 	}
-
-	std::map<std::string, Channel*>::const_iterator it_chan = user.getChannels().begin();
-	for (; it_chan != user.getChannels().end(); ++it_chan)
+	
+	if (!user.getChannels().empty())
 	{
-		std::map<int, Client*> list = it_chan->second->getUsers();
-		std::map<int, Client *>::const_iterator it_user = list.begin();
-		for (; it_user != list.end(); ++it_user)
-			srv.sendMsg(it_user->second->getFd(), Message(":" + user.getNickname() + "!" + (std::string)SERVER_NAME + " " + this->name + " " + msg.getArgv()[1] + CRLF));
+		std::map<std::string, Channel*>::const_iterator it_chan = user.getChannels().begin();
+		for (; it_chan != user.getChannels().end(); ++it_chan)
+		{
+			std::map<int, Client*> list = it_chan->second->getUsers();
+			std::map<int, Client *>::const_iterator it_user = list.begin();
+			for (; it_user != list.end(); ++it_user)
+				srv.sendMsg(it_user->second->getFd(), Message(NICK_MESSAGE(user.getFullName(), msg.getArgv()[1])));
+		}
 	}
+	else
+		srv.sendMsg(user.getFd(), Message(NICK_MESSAGE(user.getFullName(), msg.getArgv()[1])));	
 
 	srv.removeUser(user);
 	user.setNickname(msg.getArgv()[1]);

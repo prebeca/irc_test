@@ -3,6 +3,8 @@
 
 #include "ACommand.hpp"
 
+#define KICK_MESSAGE(prefix, channel, target, message) (":" + prefix + " KICK " + channel + " " + target + " :" + message + CRLF)
+
 class ACommand;
 
 class KICK: public ACommand
