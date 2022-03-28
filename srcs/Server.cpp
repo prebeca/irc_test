@@ -189,13 +189,6 @@ int Server::init()
 
 	fd_lst.push_back(server_socket);
 
-	// pollfd serverCmd_input;
-	// serverCmd_input.fd = STDIN_FILENO;
-	// // fcntl(serverCmd_input.fd, F_SETFL, O_NONBLOCK);
-	// serverCmd_input.events = POLLIN;
-
-	// fd_lst.push_back(serverCmd_input);
-
 	sockaddr_in sock_addr;
 	sock_addr.sin_family = AF_INET;
 	sock_addr.sin_addr.s_addr = INADDR_ANY;

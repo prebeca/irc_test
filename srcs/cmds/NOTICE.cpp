@@ -21,7 +21,7 @@ int NOTICE::execute(Server &srv, Client &user, const Message &msg) const
 	if (target[0] == '#')
 	{
 		Channel *chan = srv.getChannel(target);
-		if (chan == NULL || chan->getUsers().find(user.getFd()) == chan->getUsers().end())
+		if (chan == NULL || (chan->getUsers().find(user.getFd()) == chan->getUsers().end() && chan->getMode().find('n') != std::string::npos))
 			return (1);
 
 		std::map<int, Client *> target_list = chan->getUsers();

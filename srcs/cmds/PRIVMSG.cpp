@@ -30,7 +30,7 @@ int PRIVMSG::execute(Server &srv, Client &user, const Message &msg) const
 	if (target[0] == '#')
 	{
 		Channel *chan = srv.getChannel(target);
-		if (chan == NULL || chan->getUsers().find(user.getFd()) == chan->getUsers().end())
+		if (chan == NULL || (chan->getUsers().find(user.getFd()) == chan->getUsers().end() && chan->getMode().find('n') != std::string::npos))
 		{
 			srv.sendMsg(user.getFd(), Message(ERR_CANNOTSENDTOCHAN(user.getNickname(), chan->getName())));
 			return (1);

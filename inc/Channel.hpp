@@ -6,11 +6,11 @@
 
 #include "Client.hpp"
 
-#define VALID_CHANMODE "kimo"
+#define VALID_CHANMODE "kino"
 /*
    i - invite only;
    k - key needed to enter channel.
-   m - channel is moderated.
+   n - no privmsg from outside
    o - add operator
 */
 

@@ -133,7 +133,7 @@ int MODE::chanMode(Server &srv, Client &user, const Message &msg) const
 
 	for (size_t i = 1; i < flag.size(); ++i)
 	{
-		if (flag[i] == 'i' || flag[i] == 'm')
+		if (flag[i] == 'i' || flag[i] == 'n')
 		{
 			if (add_mode == "+")
 				channel->addMode(flag[i]);
