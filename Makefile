@@ -44,7 +44,7 @@ vpath %.cpp $(foreach dir, $(SRC_DIR)/, $(dir):)
 
 CC		=	clang++
 
-FLAGS	=	-g -std=c++98 -D DEBUG -Wall -Wextra -Werror
+FLAGS	=	-g -std=c++98 -Wall -Wextra -Werror -D DEBUG 
 
 # ----------------- #
 #     FUNCTIONS     #

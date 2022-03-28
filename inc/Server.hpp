@@ -95,7 +95,7 @@ private:
 
 	std::string name;
 	std::string password;
-	unsigned int port;
+	unsigned short port;
 
 	CmdHandler* cmd_handler;
 
