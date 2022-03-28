@@ -9,13 +9,14 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
+#include "utils.h"
+
 #define CRLF "\r\n"
 
 class Message
 {
 public:
 	Message(std::string raw_msg);
-	Message(std::string prefix, const char **argv);
 	~Message();
 
 	const std::string &getRaw() const;

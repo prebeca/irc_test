@@ -18,7 +18,13 @@ int PRIVMSG::execute(Server &srv, Client &user, const Message &msg) const
 	}
 
 	if (msg.getArgv().size() < 3)
-		return (1); // handle error
+	{
+		if (msg.getArgv().size() == 1)
+			srv.sendMsg(user.getFd(), Message(ERR_NORECIPIENT(user.getNickname(), this->name)));
+		else
+			srv.sendMsg(user.getFd(), Message(ERR_NOTEXTTOSEND(user.getNickname())));
+		return (1);
+	}
 
 	std::string target = msg.getArgv()[1];
 	if (target[0] == '#')

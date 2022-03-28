@@ -4,6 +4,7 @@
 #include "ACommand.hpp"
 
 #define QUIT_MESSAGE(prefix, message) (":" + prefix + " QUIT :" + message + CRLF)
+#define QUIT_ACKNOWLEDGE(prefix) (":" + prefix + " ERROR: QUIT command acknowledge" + CRLF)
 
 class ACommand;
 
@@ -17,3 +18,4 @@ public:
 };
 
 #endif // QUIT_HPP
+ 

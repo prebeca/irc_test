@@ -19,7 +19,7 @@
 #define RPL_LIST(nickname, channel, nb_users, topic) ("322 " + nickname + " " + channel + " " + nb_users + " :" + topic + CRLF)
 #define RPL_LISTEND(nickname) ("323 " + nickname + " :End of LIST" + CRLF)
 #define RPL_CHANNELMODEIS(nickname, channel, chanmodes) ("324 " + nickname + " " + channel + " " + chanmodes + CRLF)
-
+       
 #define RPL_NOTOPIC(nickname, channel) ("331 " + nickname + " " + channel + " :No topic is set" + CRLF)
 #define RPL_TOPIC(nickname, channel, topic) ("332 " + nickname + " " + channel + " :" + topic + CRLF)
 
@@ -35,6 +35,9 @@
 #define ERR_NOSUCHNICK(user_nickname, nickname) ("401 " + user_nickname + " " + nickname + " :No such nick" + CRLF)
 #define ERR_NOSUCHCHANNEL(nickname, channel) ("403 " + nickname + " " + channel + " :No such channel" + CRLF)
 #define ERR_CANNOTSENDTOCHAN(nickname, channel) ("404 " + nickname + " " + channel + " :Cannot send to channel" + CRLF)
+
+#define ERR_NORECIPIENT(nickname, command) ("411 " + nickname + " :No recipient given (" + command + ")" + CRLF)
+#define ERR_NOTEXTTOSEND(nickname) ("412 " + nickname + " :No text to send" + CRLF)
 
 #define ERR_NONICKNAMEGIVEN(nickname) ("431 " + nickname + " :No nickname given" + CRLF)
 #define ERR_ERRONEUSNICKNAME(nickname, newnickname) ("432 " + nickname + " " + newnickname + " :Erroneous nickname" + CRLF)

@@ -16,8 +16,7 @@ int QUIT::execute(Server &srv, Client &user, const Message &msg) const
 	if (msg.getArgv().size() >= 2)
 		quit_msg = msg.getArgv()[1];
 
-	const char *acknowledge[] = {"ERROR", "QUIT command acknowledge", NULL};
-	srv.sendMsg(user.getFd(), Message(SERVER_NAME, acknowledge));
+	srv.sendMsg(user.getFd(), Message(QUIT_ACKNOWLEDGE((std::string)SERVER_NAME)));
 
 	std::map<std::string, Channel *>::const_iterator it = user.getChannels().begin();
 	for (; it != user.getChannels().end(); ++it)

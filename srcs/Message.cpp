@@ -7,14 +7,6 @@ Message::Message(std::string raw_msg)
 	parseMsg();
 }
 
-Message::Message(std::string prefix, const char **argv)
-	: prefix(prefix)
-{
-	for (int i = 0; argv[i]; ++i)
-		this->argv.push_back(argv[i]);
-	raw_msg = toRaw();
-}
-
 Message::~Message()
 {
 }
