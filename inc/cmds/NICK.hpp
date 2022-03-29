@@ -6,6 +6,7 @@
 
 #define SPECIAL "[]\\`_^{|}"
 #define VALID "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz[]\\`_^{|}-"
+#define MAX_SIZE 9
 
 #define NICK_MESSAGE(prefix, new_nick) (":" + prefix + " NICK :" + new_nick + CRLF)
 

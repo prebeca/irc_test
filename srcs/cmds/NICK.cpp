@@ -23,18 +23,20 @@ int NICK::execute(Server &srv, Client &user, const Message &msg) const
 		return (1);
 	}
 
-	if (utils::strToUpper(user.getNickname()) != utils::strToUpper(msg.getArgv()[1]) && srv.getUser(msg.getArgv()[1]) != NULL)
+	std::string nickname = msg.getArgv()[1].substr(0, MAX_SIZE);
+
+	if (utils::strToUpper(user.getNickname()) != utils::strToUpper(nickname) && srv.getUser(nickname) != NULL)
 	{
 		std::string usernick = user.getNickname();
 		if (usernick.empty())
 			usernick = "*";
-		srv.sendMsg(user.getFd(), Message(ERR_NICKNAMEINUSE(usernick, msg.getArgv()[1])));
+		srv.sendMsg(user.getFd(), Message(ERR_NICKNAMEINUSE(usernick, nickname)));
 		return (1);
 	}
 
-	if (!this->isValidNick(msg.getArgv()[1]))
+	if (!this->isValidNick(nickname))
 	{
-		srv.sendMsg(user.getFd(), Message(ERR_ERRONEUSNICKNAME(user.getNickname(), msg.getArgv()[1])));
+		srv.sendMsg(user.getFd(), Message(ERR_ERRONEUSNICKNAME(user.getNickname(), nickname)));
 		return (1);
 	}
 	
@@ -46,14 +48,14 @@ int NICK::execute(Server &srv, Client &user, const Message &msg) const
 			std::map<int, Client*> list = it_chan->second->getUsers();
 			std::map<int, Client *>::const_iterator it_user = list.begin();
 			for (; it_user != list.end(); ++it_user)
-				srv.sendMsg(it_user->second->getFd(), Message(NICK_MESSAGE(user.getFullName(), msg.getArgv()[1])));
+				srv.sendMsg(it_user->second->getFd(), Message(NICK_MESSAGE(user.getFullName(), nickname)));
 		}
 	}
-	else
-		srv.sendMsg(user.getFd(), Message(NICK_MESSAGE(user.getFullName(), msg.getArgv()[1])));	
+	else if (user.isRegistered())
+		srv.sendMsg(user.getFd(), Message(NICK_MESSAGE(user.getFullName(), nickname)));	
 
 	srv.removeUser(user);
-	user.setNickname(msg.getArgv()[1]);
+	user.setNickname(nickname);
 	srv.addUser(user);
 
 	if (!user.isRegistered() && !user.getUsername().empty())
@@ -63,7 +65,7 @@ int NICK::execute(Server &srv, Client &user, const Message &msg) const
 
 bool NICK::isValidNick(std::string nick) const
 {
-	if (nick.size() > 9)
+	if (nick.size() > MAX_SIZE)
 		return (false);
 	if (!std::isalpha(nick[0]) && !std::strchr(SPECIAL, nick[0]))
 		return (false);
